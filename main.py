@@ -1,3 +1,4 @@
+from turtle import ycor
 import pygame as p
 import Functions.Read_Maze as rm
 p.init()
@@ -35,10 +36,13 @@ VERDE=(0,255,0)
 NEGRO=(0,0,0)
 BLANCO=(255,255,255)
 
-m= rm.ReadMaze("maze_100x100.csv")
+x=input("Name of the maze: ")
+y=int(input("size of maze: "))
+
+m= rm.ReadMaze(x)
 mapa = rm.ConvertMatrixToMap(m)
 
-listaMuros = construir_mapa(mapa, 100)
+listaMuros = construir_mapa(mapa, y)
 
 gameOver = False
 
@@ -47,7 +51,7 @@ while not gameOver:
     reloj.tick(60)
     Ancho = Pantalla.get_width()
     Alto= Pantalla.get_height()
-    listaMuros = construir_mapa(mapa, 100)
+    listaMuros = construir_mapa(mapa, y)
      
     for event in p.event.get():
         if event.type == p.QUIT:
