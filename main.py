@@ -17,12 +17,27 @@ def construir_mapa(mapa, n):
         y+=Alto/n
     return listaMuros
 
-def dibujar_muro ( superficie , rectangulo ) : #Dibujamos un rectángulo
-   p.draw.rect ( superficie , VERDE , rectangulo )
+def construir_puntos(mapa, n):
+    listaPuntos = []
+    x= (Ancho/n)/4
+    y= (Alto/n)/4
+    for fila in mapa:
+        for muro in fila:
+            if muro == " ":
+                listaPuntos.append(p.Rect(x,y,(Ancho/n)/2,(Alto/n)/2))
+            x+= Ancho/n
+        x= (Ancho/n)/4
+        y+=Alto/n
+    return listaPuntos
 
-def dibujar_mapa ( superficie , listaMuros ) : #Dibujamos ListaMuros con los rectángulos muro
+def dibujar_muro ( superficie , rectangulo, color ) : #Dibujamos un rectángulo
+   p.draw.rect( superficie , color , rectangulo )
+
+def dibujar_mapa ( superficie , listaMuros , listaPuntos) : #Dibujamos ListaMuros con los rectángulos muro
     for muro in listaMuros :
-        dibujar_muro ( superficie , muro )
+        dibujar_muro ( superficie , muro , VERDE )
+    for puntos in listaPuntos :
+        dibujar_muro ( superficie , puntos , NEGRO )
 
 ventana = p.display.set_mode((800,600), p.RESIZABLE)
 Pantalla = p.display.get_surface()
@@ -43,6 +58,7 @@ m= rm.ReadMaze(x)
 mapa = rm.ConvertMatrixToMap(m)
 
 listaMuros = construir_mapa(mapa, y)
+listaPuntos = construir_puntos(mapa, y)
 
 gameOver = False
 
@@ -52,7 +68,8 @@ while not gameOver:
     Ancho = Pantalla.get_width()
     Alto= Pantalla.get_height()
     listaMuros = construir_mapa(mapa, y)
-     
+    listaPuntos = construir_puntos(mapa, y)
+    
     for event in p.event.get():
         if event.type == p.QUIT:
             gameOver=True
@@ -60,7 +77,7 @@ while not gameOver:
     #-------------Fondo------------------
     ventana.fill(BLANCO)
     #------------Dibujo------------------
-    dibujar_mapa (ventana , listaMuros)
+    dibujar_mapa (ventana , listaMuros, listaPuntos)
     p.display.flip()
 
 p.quit()
