@@ -16,7 +16,7 @@ def construir_mapa(mapa, n):
         x= 0
         y+=Alto/n
     return listaMuros
-
+#-------------------Puntos-------------------------
 def construir_puntos(mapa, n):
     listaPuntos = []
     x= (Ancho/n)/4
