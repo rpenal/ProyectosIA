@@ -2,24 +2,18 @@ import pygame as p
 import Functions.Read_Maze as rm
 p.init()
 
-class Pared(p.sprite.Sprite):
-    def __init__(self):
-        super().__init__()
-        self.image= p.image.load("Images/Wall.png").convert()
-        self.rect=self.image.get_rect()
-
 #-------------------Muros------------------------
-def construir_mapa(mapa):
+def construir_mapa(mapa, n):
     listaMuros = []
     x= 0
     y= 0
     for fila in mapa:
         for muro in fila:
             if muro == "X":
-                listaMuros.append(p.Rect(x,y,80,80))
-            x+= 80
+                listaMuros.append(p.Rect(x,y,Ancho/n,Alto/n))
+            x+= Ancho/n
         x= 0
-        y+=80
+        y+=Alto/n
     return listaMuros
 
 def dibujar_muro ( superficie , rectangulo ) : #Dibujamos un rectángulo
@@ -29,46 +23,39 @@ def dibujar_mapa ( superficie , listaMuros ) : #Dibujamos ListaMuros con los rec
     for muro in listaMuros :
         dibujar_muro ( superficie , muro )
 
-Ancho = 1280
-movil= p.Rect(600,600,40,40)
-Alto = 720
+ventana = p.display.set_mode((800,600), p.RESIZABLE)
+Pantalla = p.display.get_surface()
+Ancho = Pantalla.get_width()
+Alto= Pantalla.get_height()
 
-ventana = p.display.set_mode((Ancho,Alto))
 p.display.set_caption('Muro')
 reloj = p.time.Clock()
 
-listaPared= p.sprite.Group()
-pared=Pared()
-listaPared.add(pared)
-
 VERDE=(0,255,0)
 NEGRO=(0,0,0)
+BLANCO=(255,255,255)
 
-m= rm.ReadMaze("maze_10x10.csv")
+m= rm.ReadMaze("maze_100x100.csv")
 mapa = rm.ConvertMatrixToMap(m)
 
-listaMuros = construir_mapa(mapa)
+listaMuros = construir_mapa(mapa, 100)
 
 gameOver = False
 
 while not gameOver:
+
+    reloj.tick(60)
+    Ancho = Pantalla.get_width()
+    Alto= Pantalla.get_height()
+    listaMuros = construir_mapa(mapa, 100)
+     
+    for event in p.event.get():
+        if event.type == p.QUIT:
+            gameOver=True
+
     #-------------Fondo------------------
-    ventana.fill(NEGRO)
-
+    ventana.fill(BLANCO)
     #------------Dibujo------------------
-    x=0
-    y=0
-
-    for fila in mapa:
-        for muro in fila:
-            if muro=="X":
-                pared.rect.x=x
-                pared.rect.y=y
-                listaPared.add(pared)
-                listaPared.draw(ventana)
-            x+=80
-        x=0
-        y=+80
     dibujar_mapa (ventana , listaMuros)
     p.display.flip()
 
