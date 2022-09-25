@@ -2,7 +2,181 @@ import pygame as p
 import Functions.Read_Maze as rm
 import collections
 import numpy as np
+from queue import PriorityQueue
 p.init()
+
+
+class UCSNode:
+    def __init__(self,position,directions):
+        self.position = position
+        self.directions = directions
+
+    def __lt__(self,other):
+        return True
+
+    def __le__(self,other):
+        return False
+
+    def __gt__(self,other):
+        return False
+
+    def __ge__(self,other):
+        return True
+
+    def __eq__(self,other):
+        return True
+
+
+
+
+class UCSPath:
+    def __init__(self,startingPoint,objective):
+        #adjust the starting point to the coordinate system
+        self.start = tuple(np.subtract((Alto,Ancho),startingPoint))
+        self.objective = objective
+
+        self.validPositions = validPositions.copy()
+        self.validPositions.remove(self.start)
+
+        self.fringe = PriorityQueue()
+
+        self.fringe.put((0,UCSNode(self.start,[])))
+
+
+
+    #obtain the adjacent valid positions to a given position
+    def adjacentPositions(self,position):
+        adjacent = []
+        adjacent.append(tuple(np.subtract(position,(verticalStep,0))))
+        adjacent.append(tuple(np.add(position,(verticalStep,0))))
+        adjacent.append(tuple(np.subtract(position,(0,horizontalStep))))
+        adjacent.append(tuple(np.add(position,(0,horizontalStep))))
+
+        for possible in adjacent:
+            if possible not in validPositions:
+                adjacent.remove(possible)
+
+        return adjacent
+
+    #functions to check if it can move
+    def tryUp(self,position):
+
+        #calculate the next move of a given node
+        nextMove = tuple(np.subtract(position,(verticalStep,0)))
+
+        #check if the position is in the list of valid Positions
+        validMove = nextMove in self.validPositions
+
+        return validMove
+
+    def tryDown(self,position):
+        nextMove = tuple(np.add(position,(verticalStep,0)))
+
+        validMove = nextMove in self.validPositions
+
+        return validMove
+
+    def tryLeft(self,position):
+        nextMove = tuple(np.subtract(position,(0,horizontalStep)))
+
+        validMove =  nextMove in self.validPositions
+
+        return validMove
+
+    def tryRight(self,position):
+        nextMove = tuple(np.add(position,(0,horizontalStep)))
+
+        validMove = nextMove in self.validPositions
+
+
+        return validMove
+
+
+
+    def CheckObjective(self,position):
+        return (position == self.objective)
+
+    def explore(self):
+        """
+        Function to explore
+
+        returns:
+            0 (still exploring)
+            1 (found the objective)
+            -1 (ran out of valid positions and asumes the objective is unreachable)
+        """
+        if not self.fringe.empty():
+
+            #get the highest priority item
+            item = self.fringe.get()
+            priority = item[0]
+            node = item[1]
+
+            #if it isn't in the objective
+            if not self.CheckObjective(node.position):
+
+                #check if it can move up
+                if self.tryUp(node.position):
+
+                    #calculate the new position
+                    newPosition = tuple(np.subtract(node.position,(verticalStep,0)))
+                    self.validPositions.remove(newPosition)
+
+                    #create a new node
+                    #remember to pass a copy of directions and path
+                    #not the originals
+                    newNode = UCSNode(newPosition,node.directions.copy())
+
+                    #add the instruction to this new node's directions
+                    newNode.directions.append("up")
+
+
+                    #add the node to the queue
+                    self.fringe.put((priority+1,newNode))
+
+                if self.tryLeft(node.position):
+                    newPosition = tuple(np.subtract(node.position,(0,horizontalStep)))
+                    self.validPositions.remove(newPosition)
+
+                    newNode = UCSNode(newPosition,node.directions.copy())
+                    newNode.directions.append("left")
+
+                    self.fringe.put((priority+1,newNode))
+
+                if self.tryDown(node.position):
+                    newPosition = tuple(np.add(node.position,(verticalStep,0)))
+                    self.validPositions.remove(newPosition)
+
+                    newNode = UCSNode(newPosition,node.directions.copy())
+                    newNode.directions.append("down")
+
+                    self.fringe.put((priority+1,newNode))
+
+                if self.tryRight(node.position):
+                    newPosition = tuple(np.add(node.position,(0,horizontalStep)))
+                    self.validPositions.remove(newPosition)
+
+                    newNode = UCSNode(newPosition,node.directions.copy())
+                    newNode.directions.append("right")
+
+                    self.fringe.put((priority+1,newNode))
+
+                return 0
+
+
+            #if we are in the objective
+            else:
+                print("Objective found")
+                print("Path:")
+
+                for action in node.directions:
+                    print(action)
+
+                return node, self.fringe.queue.copy()
+
+
+        return -1
+
 
 
 class IDDFSPath:
@@ -705,6 +879,7 @@ listaPuntos = construir_puntos(mapa, y)
 DFSagent = DFSPath(startPosition,objecitvePosition)
 BFSagent = BFSPath(startPosition,objecitvePosition)
 IDDFSagent = IDDFSPath(startPosition,objecitvePosition)
+UCSagent = UCSPath(startPosition,objecitvePosition)
 
 state = 0
 
@@ -712,7 +887,7 @@ while not gameOver:
 
 
 
-    reloj.tick(30)
+    reloj.tick(15)
 
 
 
@@ -748,10 +923,30 @@ while not gameOver:
 
     """
 
+
+    """
     state = IDDFSagent.explore()
     print(IDDFSagent.maxDepth)
 
     p.draw.rect(ventana,(255,255,0),p.Rect(IDDFSagent.actualPosition[1] + (Ancho/(4*y)),IDDFSagent.actualPosition[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
+    """
+
+
+
+
+    if state == 0:
+        state = UCSagent.explore()
+
+    if state in [0,1]:
+        for item in UCSagent.fringe.queue:
+                p.draw.rect(ventana,(255,255,0),p.Rect(item[1].position[1] + (Ancho/(4*y)),item[1].position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
+
+    if state not in [0,-1]:
+        for item in state[1]:
+                p.draw.rect(ventana,(255,255,0),p.Rect(item[1].position[1] + (Ancho/(4*y)),item[1].position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
+
+
+
 
 
 
