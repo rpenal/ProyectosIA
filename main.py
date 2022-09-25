@@ -411,7 +411,7 @@ mapa = rm.ConvertMatrixToMap(m)
 gameOver = False
 
 startPosition = (1 * (Alto/y),2 * (Ancho/y))
-objecitvePosition = (0, 0 - (Ancho/y))
+objecitvePosition = (0, 0 + (Ancho/y))
 
 horizontalStep = Ancho/y
 verticalStep = Alto/y
@@ -449,11 +449,14 @@ while not gameOver:
     p.draw.rect(ventana,(0,255,0),p.Rect(Ancho-startPosition[1] + (Ancho/(4*y)),Alto-startPosition[0] + (Alto/(4*y)),(Ancho/y)/2,(Alto/y)/2))
     p.draw.rect(ventana,(255,0,0),p.Rect(objecitvePosition[1] + (Ancho/(4*y)),objecitvePosition[0] + (Alto/(4*y)),(Ancho/y)/2,(Alto/y)/2))
 
+
+    """
     DFSagent.explore()
     print(DFSagent.actualPosition)
     p.draw.rect(ventana,(255,255,0),p.Rect(DFSagent.actualPosition[1] + (Ancho/(4*y)),DFSagent.actualPosition[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
 
     """
+
     if state == 0:
         state = BFSagent.explore()
 
@@ -464,7 +467,7 @@ while not gameOver:
         for action in state.path:
             p.draw.rect(ventana,(255,255,0),p.Rect(action[1] + (Ancho/(4*y)),action[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
 
-    """
+
     p.display.flip()
 
 
