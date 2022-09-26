@@ -74,8 +74,32 @@ mapa = rm.ConvertMatrixToMap(m)
 
 gameOver = False
 
+
+# STARTING POINT AND OBJECTIVE
+# THEY ARE GIVEN IN (y,x) AND ALL THE CODE USES THAT COORDINATE DISTRIBUTION
+# SO IT'S BETTER TO KEEP IT (y = vertical, x = horizontal)
+
+###     NOTE: BOTH USE A DIFFERENT COORDINATE SYSTEM
+###     startPosition takes the LOWER RIGHT CORNER AS (0,0)
+###     objectivePosition takes the THE UPPER LEFT CORNER AS (0,0)
+
+# TO CHANGE STARTING POINT CHANGE THE MULTIPLES:
+# EXAMPLE: TO SET STARTING POSITION TO (3,4)
+#     THIRD ROW FROM THE BOTTOM, FOURTH COLUMN FROM THE RIGHT
+#     startPosition = (3 * (Alto/y), 4 * (Ancho/y))
+
+# TO CHANGE OBJECTIVE POSITION, COUNT FROM THE UPPER LEFT CORNER
+# BECAUSE (0,0) IS THE UPPER LEFT CORNER
+# TO MOVE AN SPACE TO THE LEFT (FOR EXAMPLE (0,4)), ADD TO THE MULTIPLIER OF (Ancho/y)
+#     objecitvePosition = (0, 4 * (Ancho/y))
+# TO MOVE AN SPACE BELOW, (FOR EXAMPLE (5,0)), ADD TO THE MULTIPLIER OF (Alto/y)
+#     objecitvePosition = (5 * (Alto/y), 0)
+# SUBTRACT TO MOVE TO THE RIGHT OR TO MOVE UP, RESPECTIVELY
+# another example: set objectivePosition to second row from the top, third column from the left
+#     objecitvePosition = (2 * (Alto/y), 3 * (Ancho/y))
+
 startPosition = (1 * (Alto/y),2 * (Ancho/y))
-objecitvePosition = (0, 0 + (Ancho/y))
+objecitvePosition = (0 * (Alto/y), 1 * (Ancho/y))
 
 horizontalStep = Ancho/y
 verticalStep = Alto/y
