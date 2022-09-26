@@ -104,7 +104,7 @@ while not gameOver:
 
 
 
-    reloj.tick(15)
+    reloj.tick(3)
 
 
 

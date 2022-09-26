@@ -66,9 +66,11 @@ class GreedyPath:
     def CheckObjective(self):
         return (self.actualPosition == self.objective)
 
+
+    #Calculate manhattan distance from a point to the objective
     def calcDistanceToObjective(self,position):
         difference = np.subtract(self.objective,position)
-        distance = difference[0]**2 + difference[1]**2
+        distance = abs(difference[0]) + abs(difference[1])
         return distance
 
 
@@ -85,25 +87,51 @@ class GreedyPath:
         #check if we have reached the objective yet
         #if not
         if not self.CheckObjective():
+
+            #take the adjacent valid positions
             adjacents = self.adjacentPositions(self.actualPosition)
+
+            #if the list isn't void (there's at least one
+            #adjacent valid position)
             if len(adjacents) != 0:
+
+                #initialize a variable to store minimum distance
+                #and the position corresponding to it
                 minDistance = math.inf
                 minPosition = None
+
+                #for each position
                 for pos in adjacents:
+
+                    #if the manhattan distance from it to the objective
+                    #is lesser than our current minimum position
                     dist = self.calcDistanceToObjective(pos[0])
                     if  dist < minDistance:
+
+                        #set this position and its distance as minimums
                         minDistance = dist
                         minPosition = pos
 
+                #change the actual position to the position with the minimum distance
                 self.actualPosition = minPosition[0]
+
+                #remove our actual position from the list of valid positions
+                #to avoid loops
                 GreedyPath.validPositions.remove(self.actualPosition)
+
+                #append the direction we took to the direction list
                 self.directions.append(minPosition[1])
+
+                #and the position we are to our path
                 self.actualPath.append(minPosition[0])
 
 
+            #if there's no adjacent valid position
             else:
                 #check if the path is not void (we aren't in the start)
                 if self.actualPath:
+
+                    #take out the last position
                     self.actualPath.pop()
 
                     #"take one step back"
