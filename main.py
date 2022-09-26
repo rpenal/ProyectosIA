@@ -4,7 +4,7 @@ import collections
 import numpy as np
 from queue import PriorityQueue
 
-from Functions import UCS,IDDFS,DFS,BFS,Greedy
+from Functions import UCS,IDDFS,DFS,BFS,Greedy,Astar
 
 
 p.init()
@@ -96,7 +96,7 @@ BFSagent = BFS.BFSPath(startPosition,objecitvePosition,Alto,Ancho,y,validPositio
 IDDFSagent = IDDFS.IDDFSPath(startPosition,objecitvePosition,Alto,Ancho,y,validPositions)
 UCSagent = UCS.UCSPath(startPosition,objecitvePosition,Alto,Ancho,y,validPositions)
 Greedyagent = Greedy.GreedyPath(startPosition,objecitvePosition,Alto,Ancho,y,validPositions)
-
+Astaragent = Astar.AstarPath(startPosition,objecitvePosition,Alto,Ancho,y,validPositions)
 
 state = 0
 
@@ -104,7 +104,7 @@ while not gameOver:
 
 
 
-    reloj.tick(3)
+    reloj.tick(1)
 
 
 
@@ -162,12 +162,27 @@ while not gameOver:
                 p.draw.rect(ventana,(255,255,0),p.Rect(item[1].position[1] + (Ancho/(4*y)),item[1].position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
 
     """
-
+    """
     if state == 0:
         state = Greedyagent.explore()
 
 
     p.draw.rect(ventana,(255,255,0),p.Rect(Greedyagent.actualPosition[1] + (Ancho/(4*y)),Greedyagent.actualPosition[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
+    """
+
+    if state == 0:
+        state = Astaragent.explore()
+
+    if state in [0,1]:
+        for item in Astaragent.fringe.queue:
+                p.draw.rect(ventana,(255,255,0),p.Rect(item.position[1] + (Ancho/(4*y)),item.position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
+
+    if state not in [0,-1]:
+        for item in state[1]:
+                p.draw.rect(ventana,(255,255,0),p.Rect(item.position[1] + (Ancho/(4*y)),item.position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
+
+
+
 
 
     p.display.flip()
