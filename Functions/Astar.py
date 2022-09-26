@@ -9,11 +9,13 @@ class AstarNode:
     g = cost for going from the start to this node's position
     h = (aproximate) cost from the node to the objective
     """
-    def __init__(self,position,directions,g,h):
+    def __init__(self,position,directions,actualPath,g,h):
         self.position = position
         self.directions = directions
+        self.actualPath = actualPath
         self.g = g
         self.h = h
+
 
         self.f = g+h
 
@@ -67,7 +69,7 @@ class AstarPath:
         self.fringe = PriorityQueue()
 
         dist = self.calcDistanceToObjective(self.start)
-        self.fringe.put(AstarNode(self.start,[],0,dist))
+        self.fringe.put(AstarNode(self.start,[],[self.start],0,dist))
 
 
 
@@ -144,10 +146,11 @@ class AstarPath:
                     #remember to pass a copy of directions and path
                     #not the originals
                     distance = self.calcDistanceToObjective(newPosition)
-                    newNode = AstarNode(newPosition,item.directions.copy(),item.g+1,distance)
+                    newNode = AstarNode(newPosition,item.directions.copy(),item.actualPath.copy(),item.g+1,distance)
 
                     #add the instruction to this new node's directions
                     newNode.directions.append("up")
+                    newNode.actualPath.append(newPosition)
 
 
                     #add the node to the queue
@@ -158,9 +161,10 @@ class AstarPath:
                     self.validPositions.remove(newPosition)
 
                     distance = self.calcDistanceToObjective(newPosition)
-                    newNode = AstarNode(newPosition,item.directions.copy(),item.g+1,distance)
+                    newNode = AstarNode(newPosition,item.directions.copy(),item.actualPath.copy(),item.g+1,distance)
 
                     newNode.directions.append("left")
+                    newNode.actualPath.append(newPosition)
 
                     self.fringe.put(newNode)
 
@@ -169,9 +173,10 @@ class AstarPath:
                     self.validPositions.remove(newPosition)
 
                     distance = self.calcDistanceToObjective(newPosition)
-                    newNode = AstarNode(newPosition,item.directions.copy(),item.g+1,distance)
+                    newNode = AstarNode(newPosition,item.directions.copy(),item.actualPath.copy(),item.g+1,distance)
 
                     newNode.directions.append("down")
+                    newNode.actualPath.append(newPosition)
 
                     self.fringe.put(newNode)
 
@@ -180,9 +185,10 @@ class AstarPath:
                     self.validPositions.remove(newPosition)
 
                     distance = self.calcDistanceToObjective(newPosition)
-                    newNode = AstarNode(newPosition,item.directions.copy(),item.g+1,distance)
+                    newNode = AstarNode(newPosition,item.directions.copy(),item.actualPath.copy(),item.g+1,distance)
 
                     newNode.directions.append("right")
+                    newNode.actualPath.append(newPosition)
 
                     self.fringe.put(newNode)
 

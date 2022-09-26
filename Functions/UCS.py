@@ -4,9 +4,10 @@ from queue import PriorityQueue
 
 
 class UCSNode:
-    def __init__(self,position,directions):
+    def __init__(self,position,directions,actualPath):
         self.position = position
         self.directions = directions
+        self.actualPath = actualPath
 
     def __lt__(self,other):
         return True
@@ -56,7 +57,7 @@ class UCSPath:
 
         self.fringe = PriorityQueue()
 
-        self.fringe.put((0,UCSNode(self.start,[])))
+        self.fringe.put((0,UCSNode(self.start,[],[self.start])))
 
 
 
@@ -142,11 +143,11 @@ class UCSPath:
                     #create a new node
                     #remember to pass a copy of directions and path
                     #not the originals
-                    newNode = UCSNode(newPosition,node.directions.copy())
+                    newNode = UCSNode(newPosition,node.directions.copy(),node.actualPath.copy())
 
                     #add the instruction to this new node's directions
                     newNode.directions.append("up")
-
+                    newNode.actualPath.append(newPosition)
 
                     #add the node to the queue
                     self.fringe.put((priority+1,newNode))
@@ -155,8 +156,9 @@ class UCSPath:
                     newPosition = tuple(np.subtract(node.position,(0,UCSPath.horizontalStep)))
                     self.validPositions.remove(newPosition)
 
-                    newNode = UCSNode(newPosition,node.directions.copy())
+                    newNode = UCSNode(newPosition,node.directions.copy(),node.actualPath.copy())
                     newNode.directions.append("left")
+                    newNode.actualPath.append(newPosition)
 
                     self.fringe.put((priority+1,newNode))
 
@@ -164,8 +166,9 @@ class UCSPath:
                     newPosition = tuple(np.add(node.position,(UCSPath.verticalStep,0)))
                     self.validPositions.remove(newPosition)
 
-                    newNode = UCSNode(newPosition,node.directions.copy())
+                    newNode = UCSNode(newPosition,node.directions.copy(),node.actualPath.copy())
                     newNode.directions.append("down")
+                    newNode.actualPath.append(newPosition)
 
                     self.fringe.put((priority+1,newNode))
 
@@ -173,8 +176,9 @@ class UCSPath:
                     newPosition = tuple(np.add(node.position,(0,UCSPath.horizontalStep)))
                     self.validPositions.remove(newPosition)
 
-                    newNode = UCSNode(newPosition,node.directions.copy())
+                    newNode = UCSNode(newPosition,node.directions.copy(), node.actualPath.copy())
                     newNode.directions.append("right")
+                    newNode.actualPath.append(newPosition)
 
                     self.fringe.put((priority+1,newNode))
 

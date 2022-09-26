@@ -286,6 +286,8 @@ class IDDFSPath:
                     if self.directions:
                         self.directions.pop()
 
+                    return 0
+
         #if we are in our objective
         else:
             print("Objective found")

@@ -119,7 +119,7 @@ while not gameOver:
     p.draw.rect(ventana,(0,255,0),p.Rect(Ancho-startPosition[1] + (Ancho/(4*y)),Alto-startPosition[0] + (Alto/(4*y)),(Ancho/y)/2,(Alto/y)/2))
     p.draw.rect(ventana,(255,0,0),p.Rect(objecitvePosition[1] + (Ancho/(4*y)),objecitvePosition[0] + (Alto/(4*y)),(Ancho/y)/2,(Alto/y)/2))
 
-
+    """
     if state == 0:
         state = DFSagent.explore()
         p.draw.rect(ventana,(255,255,0),p.Rect(DFSagent.actualPosition[1] + (Ancho/(4*y)),DFSagent.actualPosition[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
@@ -127,7 +127,7 @@ while not gameOver:
     elif state == 1:
         for position in DFSagent.totalPath:
             p.draw.rect(ventana,(255,255,0),p.Rect(position[1] + (Ancho/(4*y)),position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
-
+    """
 
     """
     if state == 0:
@@ -139,19 +139,23 @@ while not gameOver:
     if state not in [0,-1]:
         for action in state.path:
             p.draw.rect(ventana,(255,255,0),p.Rect(action[1] + (Ancho/(4*y)),action[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
-
     """
 
 
-    """
-    state = IDDFSagent.explore()
-
-    p.draw.rect(ventana,(255,255,0),p.Rect(IDDFSagent.actualPosition[1] + (Ancho/(4*y)),IDDFSagent.actualPosition[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
-    """
-
 
     """
+    if state == 0:
+        state = IDDFSagent.explore()
+        p.draw.rect(ventana,(255,255,0),p.Rect(IDDFSagent.actualPosition[1] + (Ancho/(4*y)),IDDFSagent.actualPosition[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
 
+    elif state == 1:
+        for position in IDDFSagent.actualPath:
+            p.draw.rect(ventana,(255,255,0),p.Rect(position[1] + (Ancho/(4*y)),position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
+    """
+
+
+
+    """
     if state == 0:
         state = UCSagent.explore()
 
@@ -160,20 +164,25 @@ while not gameOver:
                 p.draw.rect(ventana,(255,255,0),p.Rect(item[1].position[1] + (Ancho/(4*y)),item[1].position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
 
     if state not in [0,-1]:
-        for item in state[1]:
-                p.draw.rect(ventana,(255,255,0),p.Rect(item[1].position[1] + (Ancho/(4*y)),item[1].position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
-
+        for position in state[0].actualPath:
+            p.draw.rect(ventana,(255,255,0),p.Rect(position[1] + (Ancho/(4*y)),position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
     """
+
+
     """
     if state == 0:
         state = Greedyagent.explore()
+        p.draw.rect(ventana,(255,255,0),p.Rect(Greedyagent.actualPosition[1] + (Ancho/(4*y)),Greedyagent.actualPosition[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
 
-
-    p.draw.rect(ventana,(255,255,0),p.Rect(Greedyagent.actualPosition[1] + (Ancho/(4*y)),Greedyagent.actualPosition[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
+    elif state == 1:
+        for position in Greedyagent.actualPath:
+            p.draw.rect(ventana,(255,255,0),p.Rect(position[1] + (Ancho/(4*y)),position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
     """
 
-    """
 
+
+
+    """
     if state == 0:
         state = Astaragent.explore()
 
@@ -182,11 +191,11 @@ while not gameOver:
                 p.draw.rect(ventana,(255,255,0),p.Rect(item.position[1] + (Ancho/(4*y)),item.position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
 
     if state not in [0,-1]:
-        for item in state[1]:
-                p.draw.rect(ventana,(255,255,0),p.Rect(item.position[1] + (Ancho/(4*y)),item.position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
-
+        for position in state[0].actualPath:
+            p.draw.rect(ventana,(255,255,0),p.Rect(position[1] + (Ancho/(4*y)),position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
 
     """
+
 
 
     p.display.flip()

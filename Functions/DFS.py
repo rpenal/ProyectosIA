@@ -185,7 +185,7 @@ class DFSPath:
             for action in self.directions:
                 print(action)
 
-
+            print("\n \n \n")
             print("Total path traversed:")
             for action in self.totalDirections:
                 print(action)
