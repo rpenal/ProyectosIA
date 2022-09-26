@@ -4,7 +4,7 @@ import collections
 import numpy as np
 from queue import PriorityQueue
 
-from Functions import UCS,IDDFS,DFS,BFS
+from Functions import UCS,IDDFS,DFS,BFS,Greedy
 
 
 p.init()
@@ -87,12 +87,16 @@ verticalStep = Alto/y
 
 listaMuros = construir_mapa(mapa, y)
 validPositions = [(muro[1],muro[0]) for muro in listaMuros]
+
+
 listaPuntos = construir_puntos(mapa, y)
 
 DFSagent = DFS.DFSPath(startPosition,objecitvePosition,Alto,Ancho,y,validPositions)
 BFSagent = BFS.BFSPath(startPosition,objecitvePosition,Alto,Ancho,y,validPositions)
 IDDFSagent = IDDFS.IDDFSPath(startPosition,objecitvePosition,Alto,Ancho,y,validPositions)
 UCSagent = UCS.UCSPath(startPosition,objecitvePosition,Alto,Ancho,y,validPositions)
+Greedyagent = Greedy.GreedyPath(startPosition,objecitvePosition,Alto,Ancho,y,validPositions)
+
 
 state = 0
 
@@ -116,10 +120,10 @@ while not gameOver:
     p.draw.rect(ventana,(255,0,0),p.Rect(objecitvePosition[1] + (Ancho/(4*y)),objecitvePosition[0] + (Alto/(4*y)),(Ancho/y)/2,(Alto/y)/2))
 
 
-
+    """
     DFSagent.explore()
     p.draw.rect(ventana,(255,255,0),p.Rect(DFSagent.actualPosition[1] + (Ancho/(4*y)),DFSagent.actualPosition[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
-
+    """
 
 
     """
@@ -159,7 +163,11 @@ while not gameOver:
 
     """
 
+    if state == 0:
+        state = Greedyagent.explore()
 
+
+    p.draw.rect(ventana,(255,255,0),p.Rect(Greedyagent.actualPosition[1] + (Ancho/(4*y)),Greedyagent.actualPosition[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
 
 
     p.display.flip()
