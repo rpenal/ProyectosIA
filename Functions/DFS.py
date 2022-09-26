@@ -40,6 +40,9 @@ class DFSPath:
         #"up","down","left","right" (always lowercase)
         self.directions = collections.deque()
 
+        self.totalPath = []
+        self.totalDirections = []
+
 
     #check if the agent can move up
     def tryUp(self):
@@ -87,6 +90,15 @@ class DFSPath:
     def CheckObjective(self):
         return (self.actualPosition == self.objective)
 
+    def oppositeDirection(self,direction):
+        if direction == "up":
+            return "down"
+        elif direction == "down":
+            return "up"
+        elif direction == "left":
+            return "right"
+        elif direction == "right":
+            return "left"
 
 
     def explore(self):
@@ -111,24 +123,32 @@ class DFSPath:
 
                 #append the new direction
                 self.directions.append("up")
+                self.totalDirections.append("up")
 
                 #add the new position to our path
                 self.actualPath.append(self.actualPosition)
+                self.totalPath.append(self.actualPosition)
 
             elif self.tryLeft():
                 self.actualPosition = tuple(np.subtract(self.actualPosition,(0,DFSPath.horizontalStep)))
                 self.directions.append("left")
+                self.totalDirections.append("left")
                 self.actualPath.append(self.actualPosition)
+                self.totalPath.append(self.actualPosition)
 
             elif self.tryDown():
                 self.actualPosition = tuple(np.add(self.actualPosition,(DFSPath.verticalStep,0)))
                 self.directions.append("down")
+                self.totalDirections.append("down")
                 self.actualPath.append(self.actualPosition)
+                self.totalPath.append(self.actualPosition)
 
             elif self.tryRight():
                 self.actualPosition = tuple(np.add(self.actualPosition,(0,DFSPath.horizontalStep)))
                 self.directions.append("right")
+                self.totalDirections.append("right")
                 self.actualPath.append(self.actualPosition)
+                self.totalPath.append(self.actualPosition)
 
             #if it cannot move
             else:
@@ -152,8 +172,8 @@ class DFSPath:
 
                 #remove the last direction taken
                 if self.directions:
-                    self.directions.pop()
-
+                    direction = self.directions.pop()
+                    self.totalDirections.append(self.oppositeDirection(direction))
 
             return 0
 
@@ -163,6 +183,11 @@ class DFSPath:
             print("Objective found")
             print("Path:")
             for action in self.directions:
+                print(action)
+
+
+            print("Total path traversed:")
+            for action in self.totalDirections:
                 print(action)
 
             return 1

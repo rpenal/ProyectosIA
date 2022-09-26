@@ -104,7 +104,7 @@ while not gameOver:
 
 
 
-    reloj.tick(1)
+    reloj.tick(15)
 
 
 
@@ -120,10 +120,13 @@ while not gameOver:
     p.draw.rect(ventana,(255,0,0),p.Rect(objecitvePosition[1] + (Ancho/(4*y)),objecitvePosition[0] + (Alto/(4*y)),(Ancho/y)/2,(Alto/y)/2))
 
 
-    """
-    DFSagent.explore()
-    p.draw.rect(ventana,(255,255,0),p.Rect(DFSagent.actualPosition[1] + (Ancho/(4*y)),DFSagent.actualPosition[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
-    """
+    if state == 0:
+        state = DFSagent.explore()
+        p.draw.rect(ventana,(255,255,0),p.Rect(DFSagent.actualPosition[1] + (Ancho/(4*y)),DFSagent.actualPosition[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
+
+    elif state == 1:
+        for position in DFSagent.totalPath:
+            p.draw.rect(ventana,(255,255,0),p.Rect(position[1] + (Ancho/(4*y)),position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
 
 
     """
@@ -142,7 +145,6 @@ while not gameOver:
 
     """
     state = IDDFSagent.explore()
-    print(IDDFSagent.maxDepth)
 
     p.draw.rect(ventana,(255,255,0),p.Rect(IDDFSagent.actualPosition[1] + (Ancho/(4*y)),IDDFSagent.actualPosition[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
     """
@@ -170,6 +172,8 @@ while not gameOver:
     p.draw.rect(ventana,(255,255,0),p.Rect(Greedyagent.actualPosition[1] + (Ancho/(4*y)),Greedyagent.actualPosition[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
     """
 
+    """
+
     if state == 0:
         state = Astaragent.explore()
 
@@ -182,7 +186,7 @@ while not gameOver:
                 p.draw.rect(ventana,(255,255,0),p.Rect(item.position[1] + (Ancho/(4*y)),item.position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
 
 
-
+    """
 
 
     p.display.flip()
