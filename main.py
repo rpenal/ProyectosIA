@@ -46,9 +46,9 @@ def dibujar_muro ( superficie , rectangulo, color ) : #Dibujamos un rectángulo
 
 def dibujar_mapa ( superficie , listaMuros , listaPuntos) : #Dibujamos ListaMuros con los rectángulos muro
     for muro in listaMuros :
-        dibujar_muro ( superficie , muro , AZUL )
+        dibujar_muro ( superficie , muro , MORADO )
     for puntos in listaPuntos :
-        dibujar_muro ( superficie , puntos , NEGRO )
+        dibujar_muro ( superficie , puntos , AMARILLO )
 
 
 y=int(input("size of maze: "))
@@ -61,9 +61,13 @@ Alto= Pantalla.get_height()
 p.display.set_caption('MazeSolver')
 reloj = p.time.Clock()
 
-AZUL=(0,0,128)
+AZUL=(119,216,248)
+ROJO=(249,152,144)
+VERDE=(173,255,153)
+MORADO=(186,117,255)
+AMARILLO=(255,223,143)
 NEGRO=(0,0,0)
-BLANCO=(255,255,255)
+BLANCO=(255,117,255)
 
 
 m= rm.ReadMaze(f"maze_{y}x{y}.csv")
@@ -142,14 +146,14 @@ while not gameOver:
         
 
     #-------------Fondo------------------
-    ventana.fill(BLANCO)
+    ventana.fill(AZUL)
     #------------Dibujo------------------
     dibujar_mapa (ventana , listaMuros, listaPuntos)
 
 
 
-    p.draw.rect(ventana,(255,0,0),p.Rect(startPosition[1] + (Alto/y)/4,startPosition[0] + (Ancho/y)/4,(Ancho/y)/2,(Alto/y)/2))
-    p.draw.rect(ventana,(0,255,0),p.Rect(objecitvePosition[1] + (Alto/y)/4,objecitvePosition[0] + (Ancho/y)/4,(Ancho/y)/2,(Alto/y)/2))
+    p.draw.rect(ventana,ROJO,p.Rect(startPosition[1],startPosition[0],(Ancho/y),(Alto/y)))
+    p.draw.rect(ventana,VERDE,p.Rect(objecitvePosition[1] ,objecitvePosition[0],(Ancho/y),(Alto/y)))
 
 
 
@@ -158,16 +162,14 @@ while not gameOver:
 
 
 
-    """
     if state == 0:
         state = DFSagent.explore()
-        p.draw.rect(ventana,(255,255,0),p.Rect(DFSagent.actualPosition[1] + (Ancho/(4*y)),DFSagent.actualPosition[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
+        p.draw.rect(ventana,NEGRO,p.Rect(DFSagent.actualPosition[1] + (Ancho/(4*y)),DFSagent.actualPosition[0] + (Alto/(4*y)),(Ancho/(y)),(Alto/(y))))
 
     elif state == 1:
         for position in DFSagent.totalPath:
-            p.draw.rect(ventana,(255,255,0),p.Rect(position[1] + (Ancho/(4*y)),position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
+            p.draw.rect(ventana,NEGRO,p.Rect(position[1] + (Ancho/(4*y)),position[0] + (Alto/(4*y)),(Ancho/(y)),(Alto/(y))))
 
-    """
 
 
     """
@@ -222,7 +224,7 @@ while not gameOver:
     """
 
 
-
+    """
     if state == 0:
         state = Astaragent.explore()
 
@@ -233,7 +235,7 @@ while not gameOver:
     if state not in [0,-1]:
         for position in state[0].actualPath:
             p.draw.rect(ventana,(255,0,0),p.Rect(position[1] + (Ancho/(4*y)),position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
-
+    """
 
 
 
