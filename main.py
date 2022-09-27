@@ -167,7 +167,7 @@ while not gameOver:
     """
 
 
-
+    """
     if state == 0:
         state = BFSagent.explore()
 
@@ -177,7 +177,7 @@ while not gameOver:
     if state not in [0,-1]:
         for action in state.path:
             p.draw.rect(ventana,(255,255,0),p.Rect(action[1] + (Ancho/(4*y)),action[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
-
+    """
 
 
 
