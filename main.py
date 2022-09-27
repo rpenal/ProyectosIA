@@ -1,8 +1,13 @@
+from typing import overload
 import pygame as p
 import Functions.Read_Maze as rm
 import collections
 import numpy as np
+
 from pygame.locals import *
+
+from datetime import time, timedelta
+
 from queue import PriorityQueue
 
 from Functions import UCS,IDDFS,DFS,BFS,Greedy,Astar
@@ -127,7 +132,16 @@ UCSagent = UCS.UCSPath(startPosition,objecitvePosition,Alto,Ancho,y,validPositio
 Greedyagent = Greedy.GreedyPath(startPosition,objecitvePosition,Alto,Ancho,y,validPositions)
 Astaragent = Astar.AstarPath(startPosition,objecitvePosition,Alto,Ancho,y,validPositions)
 
+
+timer_font = p.font.SysFont("Calibri", 38)
+
+start_time = p.time.get_ticks()
+time_hms = 0, 0, 0
+timer_surf = timer_font.render(f'{time_hms[0]:02d}:{time_hms[1]:02d}:{time_hms[2]:02d}', True, (255, 255, 255))
+
 state = 0
+start_tick=0
+on = True
 pause = False
 
 while not gameOver:
@@ -144,10 +158,13 @@ while not gameOver:
             if event.key == K_ESCAPE:
                 gameOver=True
         if event.type == p.MOUSEBUTTONDOWN:
+            on = False
             pause = True
 
 
     while pause:
+
+        oveflowtick= p.time.get_ticks()
         
         for event in p.event.get():
             if event.type == p.QUIT:
@@ -156,10 +173,23 @@ while not gameOver:
                 if event.key == K_ESCAPE:
                     gameOver=True
         if event.type == p.MOUSEBUTTONUP:
+            on = True
             pause = False
+            start_time += oveflowtick
+ 
 
-        p.display.update() 
+    if on:
+        # get the amount of ticks(milliseconds) that passed from the start
+        time_ms = p.time.get_ticks() - start_time
+        new_hms = (time_ms//(1000*60*60))%24, (time_ms//(1000*60))%60, (time_ms//1000)%60
+        if new_hms != time_hms:
+            time_hms = new_hms
+            timer_surf = timer_font.render(f'{time_hms[0]:02d}:{time_hms[1]:02d}:{time_hms[2]:02d}', True, (255, 255, 255))
 
+    ventana.blit(timer_surf, (Ancho/2.5, Alto/8))
+
+    p.display.update()
+ 
     #-------------Fondo------------------
     ventana.fill(PISO)
     #------------Dibujo------------------
