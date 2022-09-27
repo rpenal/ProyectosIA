@@ -2,6 +2,7 @@ import pygame as p
 import Functions.Read_Maze as rm
 import collections
 import numpy as np
+from pygame.locals import *
 from queue import PriorityQueue
 
 from Functions import UCS,IDDFS,DFS,BFS,Greedy,Astar
@@ -56,12 +57,12 @@ def dibujar_mapa ( superficie , listaMuros , listaPuntos) : #Dibujamos ListaMuro
 
 y=int(input("size of maze: "))
 
-ventana = p.display.set_mode((800,800), p.RESIZABLE)
+ventana = p.display.set_mode((1300,700))
 Pantalla = p.display.get_surface()
 Ancho = Pantalla.get_width()
 Alto= Pantalla.get_height()
 
-p.display.set_caption('Muro')
+p.display.set_caption('MazeSolver')
 reloj = p.time.Clock()
 
 AZUL=(0,0,128)
@@ -137,6 +138,12 @@ while not gameOver:
     for event in p.event.get():
         if event.type == p.QUIT:
             gameOver=True
+        if event.type == p.KEYDOWN:
+           if event.key == K_ESCAPE:
+                gameOver=True
+
+
+        
 
     #-------------Fondo------------------
     ventana.fill(BLANCO)
@@ -220,19 +227,17 @@ while not gameOver:
 
 
 
-    """
     if state == 0:
         state = Astaragent.explore()
 
     if state in [0,1]:
         for item in Astaragent.fringe.queue:
-                p.draw.rect(ventana,(255,255,0),p.Rect(item.position[1] + (Ancho/(4*y)),item.position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
+                p.draw.rect(ventana,(255,0,0),p.Rect(item.position[1] + (Ancho/(4*y)),item.position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
 
     if state not in [0,-1]:
         for position in state[0].actualPath:
-            p.draw.rect(ventana,(255,255,0),p.Rect(position[1] + (Ancho/(4*y)),position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
+            p.draw.rect(ventana,(255,0,0),p.Rect(position[1] + (Ancho/(4*y)),position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
 
-    """
 
 
 
