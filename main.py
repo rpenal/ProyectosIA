@@ -42,13 +42,13 @@ def construir_puntos(mapa, n):
 
 
 def dibujar_muro ( superficie , rectangulo, color ) : #Dibujamos un rectángulo
-   p.draw.rect( superficie , color , rectangulo )
+   p.draw.rect( superficie , color , rectangulo, 1)
 
 def dibujar_mapa ( superficie , listaMuros , listaPuntos) : #Dibujamos ListaMuros con los rectángulos muro
     for muro in listaMuros :
-        dibujar_muro ( superficie , muro , MORADO )
+        dibujar_muro ( superficie , muro , NEGRO )
     for puntos in listaPuntos :
-        dibujar_muro ( superficie , puntos , AMARILLO )
+        dibujar_muro ( superficie , puntos ,CAMINO )
 
 
 y=int(input("size of maze: "))
@@ -61,13 +61,15 @@ Alto= Pantalla.get_height()
 p.display.set_caption('MazeSolver')
 reloj = p.time.Clock()
 
-AZUL=(119,216,248)
+AZUL=(131,223,240)
 ROJO=(249,152,144)
 VERDE=(173,255,153)
 MORADO=(186,117,255)
 AMARILLO=(255,223,143)
-NEGRO=(0,0,0)
-BLANCO=(255,117,255)
+CAMINO=(104,121,123)
+NEGRO=(5,32,10)
+PISO=(37,67,67)
+BLANCO=(211,223,225)
 
 
 m= rm.ReadMaze(f"maze_{y}x{y}.csv")
@@ -126,6 +128,7 @@ Greedyagent = Greedy.GreedyPath(startPosition,objecitvePosition,Alto,Ancho,y,val
 Astaragent = Astar.AstarPath(startPosition,objecitvePosition,Alto,Ancho,y,validPositions)
 
 state = 0
+pause = False
 
 while not gameOver:
 
@@ -134,19 +137,31 @@ while not gameOver:
     reloj.tick(30)
 
 
-
     for event in p.event.get():
         if event.type == p.QUIT:
             gameOver=True
         if event.type == p.KEYDOWN:
-           if event.key == K_ESCAPE:
+            if event.key == K_ESCAPE:
                 gameOver=True
+        if event.type == p.MOUSEBUTTONDOWN:
+            pause = True
 
 
+    while pause:
         
+        for event in p.event.get():
+            if event.type == p.QUIT:
+                gameOver=True
+            if event.type == p.KEYDOWN: 
+                if event.key == K_ESCAPE:
+                    gameOver=True
+        if event.type == p.MOUSEBUTTONUP:
+            pause = False
+
+        p.display.update() 
 
     #-------------Fondo------------------
-    ventana.fill(AZUL)
+    ventana.fill(PISO)
     #------------Dibujo------------------
     dibujar_mapa (ventana , listaMuros, listaPuntos)
 
@@ -161,15 +176,15 @@ while not gameOver:
 
 
 
-
+    """
     if state == 0:
         state = DFSagent.explore()
-        p.draw.rect(ventana,NEGRO,p.Rect(DFSagent.actualPosition[1] + (Ancho/(4*y)),DFSagent.actualPosition[0] + (Alto/(4*y)),(Ancho/(y)),(Alto/(y))))
+        p.draw.rect(ventana,BLANCO,p.Rect(DFSagent.actualPosition[1] + (Ancho/(4*y)),DFSagent.actualPosition[0] + (Alto/(4*y)),(Ancho/(y)),(Alto/(y))))
 
     elif state == 1:
         for position in DFSagent.totalPath:
-            p.draw.rect(ventana,NEGRO,p.Rect(position[1] + (Ancho/(4*y)),position[0] + (Alto/(4*y)),(Ancho/(y)),(Alto/(y))))
-
+            p.draw.rect(ventana,BLANCO,p.Rect(position[1] + (Ancho/(4*y)),position[0] + (Alto/(4*y)),(Ancho/(y)),(Alto/(y))))
+    """
 
 
     """
@@ -177,11 +192,11 @@ while not gameOver:
         state = BFSagent.explore()
 
         for possiblePath in BFSagent.Paths:
-                p.draw.rect(ventana,(255,255,0),p.Rect(possiblePath.position[1] + (Ancho/(4*y)),possiblePath.position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
+                p.draw.rect(ventana,BLANCO,p.Rect(possiblePath.position[1] + (Ancho/(4*y)),possiblePath.position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
 
     if state not in [0,-1]:
         for action in state.path:
-            p.draw.rect(ventana,(255,255,0),p.Rect(action[1] + (Ancho/(4*y)),action[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
+            p.draw.rect(ventana,BLANCO,p.Rect(action[1] + (Ancho/(4*y)),action[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
     """
 
 
@@ -189,11 +204,11 @@ while not gameOver:
     """
     if state == 0:
         state = IDDFSagent.explore()
-        p.draw.rect(ventana,(255,255,0),p.Rect(IDDFSagent.actualPosition[1] + (Ancho/(4*y)),IDDFSagent.actualPosition[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
+        p.draw.rect(ventana,BLANCO,p.Rect(IDDFSagent.actualPosition[1] + (Ancho/(4*y)),IDDFSagent.actualPosition[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
 
     elif state == 1:
         for position in IDDFSagent.actualPath:
-            p.draw.rect(ventana,(255,255,0),p.Rect(position[1] + (Ancho/(4*y)),position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
+            p.draw.rect(ventana,BLANCO,p.Rect(position[1] + (Ancho/(4*y)),position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
     """
 
 
@@ -204,24 +219,24 @@ while not gameOver:
 
     if state in [0,1]:
         for item in UCSagent.fringe.queue:
-                p.draw.rect(ventana,(255,255,0),p.Rect(item[1].position[1] + (Ancho/(4*y)),item[1].position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
+                p.draw.rect(ventana,BLANCO,p.Rect(item[1].position[1] + (Ancho/(4*y)),item[1].position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
 
     if state not in [0,-1]:
         for position in state[0].actualPath:
-            p.draw.rect(ventana,(255,255,0),p.Rect(position[1] + (Ancho/(4*y)),position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
+            p.draw.rect(ventana,BLANCO,p.Rect(position[1] + (Ancho/(4*y)),position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
 
     """
 
-    """
+ 
     if state == 0:
         state = Greedyagent.explore()
-        p.draw.rect(ventana,(255,255,0),p.Rect(Greedyagent.actualPosition[1] + (Ancho/(4*y)),Greedyagent.actualPosition[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
+        p.draw.rect(ventana,BLANCO,p.Rect(Greedyagent.actualPosition[1] + (Ancho/(4*y)),Greedyagent.actualPosition[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
 
     elif state == 1:
         for position in Greedyagent.actualPath:
-            p.draw.rect(ventana,(255,255,0),p.Rect(position[1] + (Ancho/(4*y)),position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
+            p.draw.rect(ventana,BLANCO,p.Rect(position[1] + (Ancho/(4*y)),position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
 
-    """
+
 
 
     """
@@ -230,11 +245,11 @@ while not gameOver:
 
     if state in [0,1]:
         for item in Astaragent.fringe.queue:
-                p.draw.rect(ventana,(255,0,0),p.Rect(item.position[1] + (Ancho/(4*y)),item.position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
+                p.draw.rect(ventana,BLANCO,p.Rect(item.position[1] + (Ancho/(4*y)),item.position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
 
     if state not in [0,-1]:
         for position in state[0].actualPath:
-            p.draw.rect(ventana,(255,0,0),p.Rect(position[1] + (Ancho/(4*y)),position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
+            p.draw.rect(ventana,BLANCO,p.Rect(position[1] + (Ancho/(4*y)),position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
     """
 
 
