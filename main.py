@@ -13,10 +13,6 @@ p.init()
 
 
 
-
-
-
-
 #-------------------Muros------------------------
 def construir_mapa(mapa, n):
     listaMuros = []
