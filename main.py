@@ -56,7 +56,7 @@ def dibujar_mapa ( superficie , listaMuros , listaPuntos) : #Dibujamos ListaMuro
 
 y=int(input("size of maze: "))
 
-ventana = p.display.set_mode((800,600), p.RESIZABLE)
+ventana = p.display.set_mode((800,800), p.RESIZABLE)
 Pantalla = p.display.get_surface()
 Ancho = Pantalla.get_width()
 Alto= Pantalla.get_height()
@@ -103,8 +103,8 @@ horizontalStep = Ancho/y
 verticalStep = Alto/y
 
 
-startPosition = (0 * (Alto/y), 1 * (Ancho/y))
-objecitvePosition = (Alto - 1 * (Alto/y), Ancho - 2 * (Ancho/y))
+#startPosition = (0 * (Alto/y), 1 * (Ancho/y))
+#objecitvePosition = (Alto - 1 * (Alto/y), Ancho - 2 * (Ancho/y))
 
 
 
@@ -114,9 +114,8 @@ listaPuntos = construir_puntos(mapa, y)
 
 validPositions = [(muro[1] - verticalStep/4,muro[0] - horizontalStep/4) for muro in listaPuntos]
 
-
-
-
+startPosition = validPositions[0]
+objecitvePosition = validPositions[-1]
 
 DFSagent = DFS.DFSPath(startPosition,objecitvePosition,Alto,Ancho,y,validPositions)
 BFSagent = BFS.BFSPath(startPosition,objecitvePosition,Alto,Ancho,y,validPositions)
@@ -131,7 +130,7 @@ while not gameOver:
 
 
 
-    reloj.tick(15)
+    reloj.tick(30)
 
 
 
@@ -146,8 +145,10 @@ while not gameOver:
 
 
 
-    p.draw.rect(ventana,(255,0,0),p.Rect(startPosition[1] + (43 * Alto/y)/128,startPosition[0] + (3 * Ancho/y)/16,(Ancho/y)/2,(Alto/y)/2))
-    p.draw.rect(ventana,(0,255,0),p.Rect(objecitvePosition[1] + (43 * Alto/y)/128,objecitvePosition[0] + (3 * Ancho/y)/16,(Ancho/y)/2,(Alto/y)/2))
+    p.draw.rect(ventana,(255,0,0),p.Rect(startPosition[1] + (Alto/y)/4,startPosition[0] + (Ancho/y)/4,(Ancho/y)/2,(Alto/y)/2))
+    p.draw.rect(ventana,(0,255,0),p.Rect(objecitvePosition[1] + (Alto/y)/4,objecitvePosition[0] + (Ancho/y)/4,(Ancho/y)/2,(Alto/y)/2))
+
+
 
 
 
@@ -162,11 +163,11 @@ while not gameOver:
     elif state == 1:
         for position in DFSagent.totalPath:
             p.draw.rect(ventana,(255,255,0),p.Rect(position[1] + (Ancho/(4*y)),position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
-    """
-
-
 
     """
+
+
+
     if state == 0:
         state = BFSagent.explore()
 
@@ -176,7 +177,7 @@ while not gameOver:
     if state not in [0,-1]:
         for action in state.path:
             p.draw.rect(ventana,(255,255,0),p.Rect(action[1] + (Ancho/(4*y)),action[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
-    """
+
 
 
 
@@ -218,8 +219,8 @@ while not gameOver:
     """
 
 
-    """
 
+    """
     if state == 0:
         state = Astaragent.explore()
 
@@ -230,8 +231,8 @@ while not gameOver:
     if state not in [0,-1]:
         for position in state[0].actualPath:
             p.draw.rect(ventana,(255,255,0),p.Rect(position[1] + (Ancho/(4*y)),position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
-    """
 
+    """
 
 
 
