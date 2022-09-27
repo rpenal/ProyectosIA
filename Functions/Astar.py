@@ -60,7 +60,7 @@ class AstarPath:
 
 
         #adjust the starting point to the coordinate system
-        self.start = tuple(np.subtract((AstarPath.Alto,AstarPath.Ancho),startPoint))
+        self.start = startPoint
         self.objective = objective
 
         self.validPositions = AstarPath.validPositions.copy()

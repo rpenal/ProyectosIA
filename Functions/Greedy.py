@@ -26,7 +26,7 @@ class GreedyPath:
         GreedyPath.verticalStep = GreedyPath.Alto/GreedyPath.y
 
         #adjust the starting point to the coordinate system
-        self.start = tuple(np.subtract((GreedyPath.Alto,GreedyPath.Ancho),startPoint))
+        self.start = startPoint
         self.objective = objective
 
         #Set the agent's currrent position to the start

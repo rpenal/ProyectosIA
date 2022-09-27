@@ -25,7 +25,7 @@ class IDDFSPath:
         IDDFSPath.verticalStep = IDDFSPath.Alto/IDDFSPath.y
 
         #adjust the starting point to the coordinate system
-        self.start = tuple(np.subtract((IDDFSPath.Alto,IDDFSPath.Ancho),start))
+        self.start = start
         self.objective = objective
 
 

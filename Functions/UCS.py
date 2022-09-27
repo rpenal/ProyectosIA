@@ -49,7 +49,7 @@ class UCSPath:
 
 
         #adjust the starting point to the coordinate system
-        self.start = tuple(np.subtract((UCSPath.Alto,UCSPath.Ancho),startingPoint))
+        self.start = startingPoint
         self.objective = objective
 
         self.validPositions = UCSPath.validPositions.copy()

@@ -98,22 +98,25 @@ gameOver = False
 # another example: set objectivePosition to second row from the top, third column from the left
 #     objecitvePosition = (2 * (Alto/y), 3 * (Ancho/y))
 
-startPosition = (1 * (Alto/y),2 * (Ancho/y))
-objecitvePosition = (0 * (Alto/y), 1 * (Ancho/y))
 
 horizontalStep = Ancho/y
 verticalStep = Alto/y
 
 
+startPosition = (0 * (Alto/y), 1 * (Ancho/y))
+objecitvePosition = (Alto - 1 * (Alto/y), Ancho - 2 * (Ancho/y))
 
 
 
 
 listaMuros = construir_mapa(mapa, y)
-validPositions = [(muro[1],muro[0]) for muro in listaMuros]
-
-
 listaPuntos = construir_puntos(mapa, y)
+
+validPositions = [(muro[1] - verticalStep/4,muro[0] - horizontalStep/4) for muro in listaPuntos]
+
+
+
+
 
 DFSagent = DFS.DFSPath(startPosition,objecitvePosition,Alto,Ancho,y,validPositions)
 BFSagent = BFS.BFSPath(startPosition,objecitvePosition,Alto,Ancho,y,validPositions)
@@ -140,8 +143,16 @@ while not gameOver:
     ventana.fill(BLANCO)
     #------------Dibujo------------------
     dibujar_mapa (ventana , listaMuros, listaPuntos)
-    p.draw.rect(ventana,(0,255,0),p.Rect(Ancho-startPosition[1] + (Ancho/(4*y)),Alto-startPosition[0] + (Alto/(4*y)),(Ancho/y)/2,(Alto/y)/2))
-    p.draw.rect(ventana,(255,0,0),p.Rect(objecitvePosition[1] + (Ancho/(4*y)),objecitvePosition[0] + (Alto/(4*y)),(Ancho/y)/2,(Alto/y)/2))
+
+
+
+    p.draw.rect(ventana,(255,0,0),p.Rect(startPosition[1] + (43 * Alto/y)/128,startPosition[0] + (3 * Ancho/y)/16,(Ancho/y)/2,(Alto/y)/2))
+    p.draw.rect(ventana,(0,255,0),p.Rect(objecitvePosition[1] + (43 * Alto/y)/128,objecitvePosition[0] + (3 * Ancho/y)/16,(Ancho/y)/2,(Alto/y)/2))
+
+
+
+
+
 
     """
     if state == 0:
@@ -152,6 +163,8 @@ while not gameOver:
         for position in DFSagent.totalPath:
             p.draw.rect(ventana,(255,255,0),p.Rect(position[1] + (Ancho/(4*y)),position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
     """
+
+
 
     """
     if state == 0:
@@ -190,8 +203,8 @@ while not gameOver:
     if state not in [0,-1]:
         for position in state[0].actualPath:
             p.draw.rect(ventana,(255,255,0),p.Rect(position[1] + (Ancho/(4*y)),position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
-    """
 
+    """
 
     """
     if state == 0:
@@ -201,12 +214,12 @@ while not gameOver:
     elif state == 1:
         for position in Greedyagent.actualPath:
             p.draw.rect(ventana,(255,255,0),p.Rect(position[1] + (Ancho/(4*y)),position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
-    """
-
-
-
 
     """
+
+
+    """
+
     if state == 0:
         state = Astaragent.explore()
 
@@ -217,8 +230,8 @@ while not gameOver:
     if state not in [0,-1]:
         for position in state[0].actualPath:
             p.draw.rect(ventana,(255,255,0),p.Rect(position[1] + (Ancho/(4*y)),position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
-
     """
+
 
 
 

@@ -24,7 +24,7 @@ class DFSPath:
         DFSPath.verticalStep = DFSPath.Alto/DFSPath.y
 
         #adjust the starting point to the coordinate system
-        self.start = tuple(np.subtract((DFSPath.Alto,DFSPath.Ancho),start))
+        self.start = start
         self.objective = objective
 
 
