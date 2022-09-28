@@ -63,7 +63,9 @@ reloj = p.time.Clock()
 myfont = p.font.SysFont('Lucida Console', 20)
 timer_font = p.font.SysFont("Calibri", 40)
 
+########## BACKGROUNDS ########## 
 
+menuBg = p.image.load("Images\Background.jpeg").convert_alpha()
 
 ########## COLORS ##########
 
@@ -212,6 +214,7 @@ def menu():
 
     global menu_s, gameOver, selectAlg_s, selectMaze_s, mainLoop_s
 
+    ventana.blit(menuBg, (0, 0))
     mazesBtn = button(RED, 550, 270, 200, 25, "Mazes")
     importBtn = button(RED, 550, 300, 200, 25, "Import")
     exitBtn = button(RED, 550, 360, 200, 25, "EXIT")
@@ -219,12 +222,14 @@ def menu():
 
     while menu_s:
 
-
+        
         ##### RENDER #####
-
+        ventana.fill(PISO)
+        ventana.blit(menuBg, (0, 0))
         mazesBtn.draw(ventana, (0,0,0))
         importBtn.draw(ventana, (0,0,0))
         exitBtn.draw(ventana, (0,0,0))
+        
 
         ##### EVENTOS #####
 
@@ -272,14 +277,15 @@ def selectMaze():
 
     while selectMaze_s:
 
-
         ##### RENDER #####
-
+        ventana.blit(menuBg, (0, 0))
         mazes5Btn.draw(ventana, (0,0,0))
         mazes10Btn.draw(ventana, (0,0,0))
         mazes50Btn.draw(ventana, (0,0,0))
         mazes100Btn.draw(ventana, (0,0,0))
         mazes400Btn.draw(ventana, (0,0,0))
+
+        
 
         ##### EVENTOS #####
 
@@ -415,6 +421,8 @@ def selectAlg():
 
         ##### RENDER #####
 
+        ventana.fill(PISO)
+        ventana.blit(menuBg, (0, 0))
         DFSBtn.draw(ventana, (0,0,0))
         BFSBtn.draw(ventana, (0,0,0))
         UCSBtn.draw(ventana, (0,0,0))
