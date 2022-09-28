@@ -1,3 +1,4 @@
+from importlib.resources import path
 from typing import overload
 import pygame as p
 import Functions.Read_Maze as rm
@@ -70,7 +71,7 @@ AZUL=(131,223,240)
 ROJO=(249,152,144)
 VERDE=(173,255,153)
 MORADO=(186,117,255)
-AMARILLO=(255,223,143)
+FRONTERA=(179,31,25)
 CAMINO=(104,121,123)
 NEGRO=(5,32,10)
 PISO=(37,67,67)
@@ -138,9 +139,10 @@ timer_font = p.font.SysFont("Calibri", 40)
 time_hms = 0, 0, 0
 timer_surf = timer_font.render(f'{time_hms[0]:02d}:{time_hms[1]:02d}:{time_hms[2]:02d}', True, (255, 255, 255))
 
+route=[]
 found=False
 state = 0
-start_tick=0
+start_tick=p.time.get_ticks()
 on = True
 pause = False
 
@@ -163,23 +165,25 @@ while not gameOver:
 
 
     while pause:
-        
+
         for event in p.event.get():
             if event.type == p.QUIT:
                 gameOver=True
-            if event.type == p.KEYDOWN: 
+            if event.type == p.KEYDOWN:
                 if event.key == K_ESCAPE:
                     gameOver=True
         if event.type == p.MOUSEBUTTONUP:
             on = True
             pause = False
- 
+
     while found:
 
         for event in p.event.get():
             if event.type == p.QUIT:
-                gameOver=True
-            if event.type == p.KEYDOWN: 
+                    gameOver=True
+                    on= False
+                    found = False
+            if event.type == p.KEYDOWN:
                 if event.key == K_ESCAPE:
                     gameOver=True
                     on= False
@@ -187,7 +191,7 @@ while not gameOver:
 
     if on:
         # get the amount of ticks(milliseconds) that passed from the start
-        time_ms = p.time.get_ticks()
+        time_ms = p.time.get_ticks() - start_tick
         new_hms = (time_ms//(1000*60))%60, (time_ms//1000)%60, int(((time_ms/1000)-(time_ms//1000))*1000)
         if new_hms != time_hms:
             time_hms = new_hms
@@ -196,13 +200,13 @@ while not gameOver:
 
 
     p.display.update()
- 
+
     #-------------Fondo------------------
     ventana.fill(PISO)
     #------------Dibujo------------------
     dibujar_mapa (ventana , listaMuros, listaPuntos)
 
-    ventana.blit(timer_surf, (Ancho/2.3, Alto/1000))
+
 
 
     p.draw.rect(ventana,ROJO,p.Rect(startPosition[1],startPosition[0],(Ancho/y),(Alto/y)),5,15)
@@ -214,84 +218,122 @@ while not gameOver:
 
 
 
-    """
-    if state == 0:
-        state = DFSagent.explore()
-        p.draw.rect(ventana,BLANCO,p.Rect(DFSagent.actualPosition[1] + (Ancho/(4*y)),DFSagent.actualPosition[0] + (Alto/(4*y)),(Ancho/(y)),(Alto/(y))),0,10)
+    #DFS
+    # if state == 0:
+    #     state = DFSagent.explore()
+    #     route.append(p.Rect(DFSagent.actualPosition[1] + (Ancho/(4*y)),DFSagent.actualPosition[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
+    #     for r in route:
+    #         p.draw.rect(ventana,FRONTERA,r,0,10)
+    #     p.draw.rect(ventana,BLANCO,p.Rect(DFSagent.actualPosition[1] + (Ancho/(4*y)),DFSagent.actualPosition[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))),0,10)
 
-    elif state == 1:
-        for position in DFSagent.totalPath:
-            p.draw.rect(ventana,BLANCO,p.Rect(position[1] + (Ancho/(4*y)),position[0] + (Alto/(4*y)),(Ancho/(y)),(Alto/(y))),0,10)
-    """
-
-
-    """
-    if state == 0:
-        state = BFSagent.explore()
-
-        for possiblePath in BFSagent.Paths:
-                p.draw.rect(ventana,BLANCO,p.Rect(possiblePath.position[1] + (Ancho/(4*y)),possiblePath.position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))),0,10)
-
-    if state not in [0,-1]:
-        for action in state.path:
-            p.draw.rect(ventana,BLANCO,p.Rect(action[1] + (Ancho/(4*y)),action[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))),0,10)
-    """
+    # elif state == 1:
+    #     for r in route:
+    #         p.draw.rect(ventana,FRONTERA,r,0,10)
+    #     for position in DFSagent.totalPath:
+    #         p.draw.rect(ventana,BLANCO,p.Rect(position[1] + (Ancho/(4*y)),position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))),0,10)
+    #     found= True
 
 
 
-    """
-    if state == 0:
-        state = IDDFSagent.explore()
-        p.draw.rect(ventana,BLANCO,p.Rect(IDDFSagent.actualPosition[1] + (Ancho/(4*y)),IDDFSagent.actualPosition[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))),0,10
+    #BFS
+    # if state == 0:
+    #     state = BFSagent.explore()
+    #     for possiblePath in BFSagent.Paths:
+    #         route.append(p.Rect(possiblePath.position[1] + (Ancho/(4*y)),possiblePath.position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
+    #     for r in route:
+    #         p.draw.rect(ventana,FRONTERA,r,0,10)
+    #     for possiblePath in BFSagent.Paths:
+    #         p.draw.rect(ventana,BLANCO,p.Rect(possiblePath.position[1] + (Ancho/(4*y)),possiblePath.position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))),0,10)
 
-    elif state == 1:
-        for position in IDDFSagent.actualPath:
-            p.draw.rect(ventana,BLANCO,p.Rect(position[1] + (Ancho/(4*y)),position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))),0,10)
-    """
+    # if state not in [0,-1]:
+    #     for r in route:
+    #         p.draw.rect(ventana,FRONTERA,r,0,10)
+    #     for action in state.path:
+    #         p.draw.rect(ventana,BLANCO,p.Rect(action[1] + (Ancho/(4*y)),action[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))),0,10)
+    #     found= True
 
 
 
-    """
-    if state == 0:
-        state = UCSagent.explore()
+    #IDDFS
+    # if state == 0:
+    #     state = IDDFSagent.explore()
+    #     route.append(p.Rect(IDDFSagent.actualPosition[1] + (Ancho/(4*y)),IDDFSagent.actualPosition[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
+    #     for r in route:
+    #         p.draw.rect(ventana,FRONTERA,r,0,10)
+    #     p.draw.rect(ventana,BLANCO,p.Rect(IDDFSagent.actualPosition[1] + (Ancho/(4*y)),IDDFSagent.actualPosition[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))),0,10)
 
-    if state in [0,1]:
-        for item in UCSagent.fringe.queue:
-                p.draw.rect(ventana,BLANCO,p.Rect(item[1].position[1] + (Ancho/(4*y)),item[1].position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))),0,10)
-
-    if state not in [0,-1]:
-        for position in state[0].actualPath:
-            p.draw.rect(ventana,BLANCO,p.Rect(position[1] + (Ancho/(4*y)),position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))),0,10)
-
-    """
-
- 
-    if state == 0:
-        state = Greedyagent.explore()
-        p.draw.rect(ventana,BLANCO,p.Rect(Greedyagent.actualPosition[1] + (Ancho/(4*y)),Greedyagent.actualPosition[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))),0,10)
-
-    elif state == 1:
-        for position in Greedyagent.actualPath:
-            p.draw.rect(ventana,BLANCO,p.Rect(position[1] + (Ancho/(4*y)),position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))),0,10)
-        found= True
+    # elif state == 1:
+    #     for r in route:
+    #         p.draw.rect(ventana,FRONTERA,r,0,10)
+    #     for position in IDDFSagent.actualPath:
+    #         p.draw.rect(ventana,BLANCO,p.Rect(position[1] + (Ancho/(4*y)),position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))),0,10)
+    #     found= True
 
 
 
 
-    """
+
+    #UCS
+    # if state == 0:
+    #     state = UCSagent.explore()
+
+    # if state in [0,1]:
+    #     for item in UCSagent.fringe.queue:
+    #         route.append(p.Rect(item[1].position[1] + (Ancho/(4*y)),item[1].position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
+    #     for r in route:
+    #         p.draw.rect(ventana,FRONTERA,r,0,10)
+    #     for item in UCSagent.fringe.queue:
+    #         p.draw.rect(ventana,BLANCO,p.Rect(item[1].position[1] + (Ancho/(4*y)),item[1].position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))),0,10)
+
+    # if state not in [0,-1]:
+    #     for r in route:
+    #         p.draw.rect(ventana,FRONTERA,r,0,10)
+    #     for position in state[0].actualPath:
+    #         p.draw.rect(ventana,BLANCO,p.Rect(position[1] + (Ancho/(4*y)),position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))),0,10)
+    #     found= True
+
+
+
+    #Greedy
+    # if state == 0:
+    #     state = Greedyagent.explore()
+    #     route.append(p.Rect(Greedyagent.actualPosition[1] + (Ancho/(4*y)),Greedyagent.actualPosition[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
+    #     p.draw.rect(ventana,BLANCO,p.Rect(Greedyagent.actualPosition[1] + (Ancho/(4*y)),Greedyagent.actualPosition[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))),0,10)
+    #     for r in route:
+    #         p.draw.rect(ventana,FRONTERA,r,0,10)
+    #     p.draw.rect(ventana,BLANCO,p.Rect(Greedyagent.actualPosition[1] + (Ancho/(4*y)),Greedyagent.actualPosition[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))),0,10)
+
+    # elif state == 1:
+    #     for r in route:
+    #         p.draw.rect(ventana,FRONTERA,r,0,10)
+    #     for position in Greedyagent.actualPath:
+    #         p.draw.rect(ventana,BLANCO,p.Rect(position[1] + (Ancho/(4*y)),position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))),0,10)
+    #     found= True
+    
+
+
+
+    #Astar
     if state == 0:
         state = Astaragent.explore()
 
     if state in [0,1]:
         for item in Astaragent.fringe.queue:
-                p.draw.rect(ventana,BLANCO,p.Rect(item.position[1] + (Ancho/(4*y)),item.position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))),0,10)
+            route.append(p.Rect(item.position[1] + (Ancho/(4*y)),item.position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
+        for r in route:
+            p.draw.rect(ventana,FRONTERA,r,0,10)  
+        for item in Astaragent.fringe.queue:
+            p.draw.rect(ventana,BLANCO,p.Rect(item.position[1] + (Ancho/(4*y)),item.position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))),0,10)
 
     if state not in [0,-1]:
+        for r in route:
+            p.draw.rect(ventana,FRONTERA,r,0,10)  
         for position in state[0].actualPath:
             p.draw.rect(ventana,BLANCO,p.Rect(position[1] + (Ancho/(4*y)),position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))),0,10)
-    """
+        found= True
+    
 
-
+    ventana.blit(timer_surf, (Ancho/2.3, Alto/1000))
 
     p.display.flip()
 
