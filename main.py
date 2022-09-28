@@ -241,8 +241,8 @@ def menu():
                 menu_s = False
             if event.type == p.KEYDOWN:
                 if event.key == K_ESCAPE:
-                    menu_s = False
                     gameOver=True
+                    menu_s = False
             if event.type == p.MOUSEBUTTONDOWN:
 
                 ############ control de los botones
