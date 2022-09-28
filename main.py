@@ -266,7 +266,7 @@ def menu():
 selectMaze_s= bool
 def selectMaze():
 
-    global menu_s, selectMaze_s, gameOver, listaMuros, listaPuntos, pause, validPositions, startPosition, objecitvePosition, Ancho, Alto, found, on, route, state, start_tick, verticalStep, horizontalStep, y
+    global menu_s, selectMaze_s, gameOver, listaMuros, listaPuntos, pause, validPositions, startPosition, objecitvePosition, Ancho, Alto, found, on, route, state, start_tick, verticalStep, horizontalStep, y, start_tick
 
     mazes5Btn = button(RED, 550, 270, 200, 25, "Maze 5x5")
     mazes10Btn = button(RED, 550, 300, 200, 25, "Maze 10x10")
@@ -321,7 +321,6 @@ def selectMaze():
                     found=False
                     state= 0
                     on = True
-                    start_tick=p.time.get_ticks()
                     changescn("selectAlg")
 
                 if mazes10Btn.isOver(pos):
@@ -340,7 +339,6 @@ def selectMaze():
                     found=False
                     state= 0
                     on = True
-                    start_tick=p.time.get_ticks()
                     changescn("selectAlg")
 
                 if mazes50Btn.isOver(pos):
@@ -359,7 +357,6 @@ def selectMaze():
                     found=False
                     state= 0
                     on = True
-                    start_tick=p.time.get_ticks()
                     changescn("selectAlg")
 
                 if mazes100Btn.isOver(pos):
@@ -378,7 +375,6 @@ def selectMaze():
                     found=False
                     state= 0
                     on = True
-                    start_tick=p.time.get_ticks()
                     changescn("selectAlg")
 
                 if mazes400Btn.isOver(pos):
@@ -397,7 +393,6 @@ def selectMaze():
                     found=False
                     state= 0
                     on = True
-                    start_tick=p.time.get_ticks()
                     changescn("selectAlg")
 
         # Refresh Screen
@@ -407,7 +402,7 @@ def selectMaze():
 selectAlg_s= bool
 def selectAlg():
 
-    global menu_s, selectMaze_s, selectAlg_s, gameOver, Astaragent, DFSagent, BFSagent, IDDFSagent, UCSagent, Greedyagent, Ancho, Alto, gameOver, Alg, y, validPositions, startPosition, objecitvePosition
+    global menu_s, selectMaze_s, selectAlg_s, gameOver, Astaragent, DFSagent, BFSagent, IDDFSagent, UCSagent, Greedyagent, Ancho, Alto, gameOver, Alg, y, validPositions, startPosition, objecitvePosition, start_tick
 
     DFSBtn = button(RED, 550, 270, 200, 25, "DFS")
     BFSBtn = button(RED, 550, 300, 200, 25, "BFS")
@@ -452,31 +447,37 @@ def selectAlg():
                 if DFSBtn.isOver(pos):
                     DFSagent = DFS.DFSPath(startPosition,objecitvePosition,Alto,Ancho,y,validPositions)
                     Alg= 1
+                    start_tick=p.time.get_ticks()
                     changescn("mainLoop")
 
                 if BFSBtn.isOver(pos):
                     BFSagent = BFS.BFSPath(startPosition,objecitvePosition,Alto,Ancho,y,validPositions)
                     Alg= 2
+                    start_tick=p.time.get_ticks()
                     changescn("mainLoop")
 
                 if UCSBtn.isOver(pos):
                     UCSagent = UCS.UCSPath(startPosition,objecitvePosition,Alto,Ancho,y,validPositions)
                     Alg= 3
+                    start_tick=p.time.get_ticks()
                     changescn("mainLoop")
 
                 if GreedyBtn.isOver(pos):
                     Greedyagent = Greedy.GreedyPath(startPosition,objecitvePosition,Alto,Ancho,y,validPositions)
                     Alg= 4
+                    start_tick=p.time.get_ticks()
                     changescn("mainLoop")
 
                 if IDDFSBtn.isOver(pos):
                     IDDFSagent = IDDFS.IDDFSPath(startPosition,objecitvePosition,Alto,Ancho,y,validPositions)
                     Alg= 5
+                    start_tick=p.time.get_ticks()
                     changescn("mainLoop")
 
                 if AstarBtn.isOver(pos):
                     Astaragent = Astar.AstarPath(startPosition,objecitvePosition,Alto,Ancho,y,validPositions)
                     Alg= 6
+                    start_tick=p.time.get_ticks()
                     changescn("mainLoop")
 
         # Refresh Screen
