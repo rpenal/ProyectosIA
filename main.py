@@ -133,12 +133,12 @@ Greedyagent = Greedy.GreedyPath(startPosition,objecitvePosition,Alto,Ancho,y,val
 Astaragent = Astar.AstarPath(startPosition,objecitvePosition,Alto,Ancho,y,validPositions)
 
 
-timer_font = p.font.SysFont("Calibri", 38)
+timer_font = p.font.SysFont("Calibri", 40)
 
-start_time = p.time.get_ticks()
 time_hms = 0, 0, 0
 timer_surf = timer_font.render(f'{time_hms[0]:02d}:{time_hms[1]:02d}:{time_hms[2]:02d}', True, (255, 255, 255))
 
+found=False
 state = 0
 start_tick=0
 on = True
@@ -163,8 +163,6 @@ while not gameOver:
 
 
     while pause:
-
-        oveflowtick= p.time.get_ticks()
         
         for event in p.event.get():
             if event.type == p.QUIT:
@@ -175,18 +173,27 @@ while not gameOver:
         if event.type == p.MOUSEBUTTONUP:
             on = True
             pause = False
-            start_time += oveflowtick
  
+    while found:
+
+        for event in p.event.get():
+            if event.type == p.QUIT:
+                gameOver=True
+            if event.type == p.KEYDOWN: 
+                if event.key == K_ESCAPE:
+                    gameOver=True
+                    on= False
+                    found = False
 
     if on:
         # get the amount of ticks(milliseconds) that passed from the start
-        time_ms = p.time.get_ticks() - start_time
-        new_hms = (time_ms//(1000*60*60))%24, (time_ms//(1000*60))%60, (time_ms//1000)%60
+        time_ms = p.time.get_ticks()
+        new_hms = (time_ms//(1000*60))%60, (time_ms//1000)%60, int(((time_ms/1000)-(time_ms//1000))*1000)
         if new_hms != time_hms:
             time_hms = new_hms
-            timer_surf = timer_font.render(f'{time_hms[0]:02d}:{time_hms[1]:02d}:{time_hms[2]:02d}', True, (255, 255, 255))
+            timer_surf = timer_font.render(f'{time_hms[0]:02d}:{time_hms[1]:02d}:{time_hms[2]:02}', True, (255, 255, 255))
 
-    ventana.blit(timer_surf, (Ancho/2.5, Alto/8))
+
 
     p.display.update()
  
@@ -195,6 +202,7 @@ while not gameOver:
     #------------Dibujo------------------
     dibujar_mapa (ventana , listaMuros, listaPuntos)
 
+    ventana.blit(timer_surf, (Ancho/2.3, Alto/1000))
 
 
     p.draw.rect(ventana,ROJO,p.Rect(startPosition[1],startPosition[0],(Ancho/y),(Alto/y)),5,15)
@@ -265,6 +273,7 @@ while not gameOver:
     elif state == 1:
         for position in Greedyagent.actualPath:
             p.draw.rect(ventana,BLANCO,p.Rect(position[1] + (Ancho/(4*y)),position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))),0,10)
+        found= True
 
 
 
