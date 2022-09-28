@@ -54,10 +54,28 @@ ventana = p.display.set_mode((1300,700))
 Pantalla = p.display.get_surface()
 Ancho = Pantalla.get_width()
 Alto= Pantalla.get_height()
+horizontalStep = Ancho/y
+verticalStep = Alto/y
 
 p.display.set_caption('MazeSolver')
 reloj = p.time.Clock()
 
+########## FONTS ##########
+
+myfont = p.font.SysFont('Lucida Console', 20)
+timer_font = p.font.SysFont("Calibri", 40)
+
+
+
+########## COLORS ##########
+
+RED = (255, 0, 0)
+GREEN = (20, 255, 140)
+BLUE = (100, 100, 255)
+GREY = (210, 210 ,210)
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+MAGENTA = (194,9,84)
 AZUL=(131,223,240)
 ROJO=(249,152,144)
 VERDE=(173,255,153)
@@ -73,7 +91,290 @@ m= rm.ReadMaze(f"maze_{y}x{y}.csv")
 mapa = rm.ConvertMatrixToMap(m)
 
 gameOver = False
+first= True
 
+########## CLASSES, INSTANCES, GROUPS ##########
+
+class button():
+    def __init__(self, color, x,y,width,height, text=''):
+        self.color = color
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.text = text
+
+    def draw(self,win,outline=None):
+        if outline:
+            p.draw.rect(win, outline, (self.x-2,self.y-2,self.width+4,self.height+4),0)
+
+        p.draw.rect(win, self.color, (self.x,self.y,self.width,self.height),0)
+
+        if self.text != '':
+            text = myfont.render(self.text, 1, (0,0,0))
+            win.blit(text, (self.x + (self.width/2 - text.get_width()/2), self.y + (self.height/2 - text.get_height()/2)))
+
+        pos = p.mouse.get_pos()
+        if self.isOver(pos):
+            self.color = WHITE
+        else:
+            self.color = GREY
+
+    def isOver(self, pos):
+        if pos[0] > self.x and pos[0] < self.x + self.width:
+            if pos[1] > self.y and pos[1] < self.y + self.height:
+                return True
+
+        return False
+
+okBtn = button(RED, 250, 300, 200, 25, "ok")
+
+class InputBox:
+
+    COLOR_INACTIVE = BLACK
+    COLOR_ACTIVE = WHITE
+
+    def __init__(self, x, y, w, h, text=''):
+        self.rect = p.Rect(x, y, w, h)
+        self.color = InputBox.COLOR_INACTIVE
+        self.text = text
+        self.txt_surface = myfont.render(text, True, BLACK)
+        self.active = False
+
+    def handle_event(self, event):
+
+        if event.type == p.MOUSEBUTTONDOWN:
+            # If the user clicked on the input_box rect.
+            if self.rect.collidepoint(event.pos):
+                # Toggle the active variable.
+                self.active = not self.active
+            else:
+                self.active = False
+            # Change the current color of the input box.
+            self.color = InputBox.COLOR_ACTIVE if self.active else InputBox.COLOR_INACTIVE
+        if event.type == p.KEYDOWN:
+            if self.active:
+                if event.key == p.K_RETURN:
+                    print(self.text)
+                    self.text = ''
+                elif event.key == p.K_BACKSPACE:
+                    self.text = self.text[:-1]
+
+                else:
+                    if len(self.text) < 10:
+                        self.text += event.unicode
+                # Re-render the text.
+                self.txt_surface = myfont.render(self.text, True, self.color)
+
+    def update(self):
+        # Resize the box if the text is too long.
+        width = max(200, self.txt_surface.get_width()+10)
+        self.rect.w = width
+
+    def draw(self, screen):
+        # Blit the text.
+        screen.blit(self.txt_surface, (self.rect.x+5, self.rect.y+5))
+        # Blit the rect.
+        p.draw.rect(screen, self.color, self.rect, 2)
+
+input_box1 = InputBox(300, 300, 140, 32)
+
+
+def changescn(scn):
+
+    # ~ continuar haciendo lo mismo que abajo
+    global menu_s, importMaze_s, mainLoop_s, selectMaze_s
+    menu_s = mainLoop_s= importMaze_s = selectMaze_s= False
+
+    if scn == "menu":
+        menu_s = True
+        menu()
+
+    elif scn == "importMaze":
+        importMaze_s = True
+        #importMaze()
+
+    elif scn == "selectMaze":
+        mainLoop_s = True
+        mainloop()
+
+    elif scn == "mainLoop":
+        mainLoop_s = True
+        #mainLoop()
+
+######### ESCENAS ##########
+
+##### menu
+
+menu_s = bool
+def menu():
+
+
+    global menu_s, first, gameOver, listaMuros, listaPuntos, pause, validPositions, startPosition, objecitvePosition, Astaragent, Ancho, Alto, gameOver, timer_surf, found, on, time_hms, route, state, start_tick
+
+    time_hms = 0, 0, 0
+    timer_surf = timer_font.render(f'{time_hms[0]:02d}:{time_hms[1]:02d}:{time_hms[2]:02d}', True, (255, 255, 255))
+
+
+    mazesBtn = button(RED, 300, 270, 200, 25, "Mazes")
+    importBtn = button(RED, 300, 300, 200, 25, "Import")
+    exitBtn = button(RED, 300, 360, 200, 25, "EXIT")
+    backBtn = button(RED, 550, 450, 200, 25, "Back")
+
+
+    while menu_s:
+
+
+        ##### RENDER #####
+
+        mazesBtn.draw(ventana, (0,0,0))
+        importBtn.draw(ventana, (0,0,0))
+        exitBtn.draw(ventana, (0,0,0))
+
+        if first == False:
+
+            backBtn.draw(ventana, (0,0,0))
+
+        ##### EVENTOS #####
+
+        for event in p.event.get():
+            pos = p.mouse.get_pos() # toma la posicion del mouse
+
+            if event.type == p.QUIT:
+                gameOver = True
+                menu_s = False
+            if event.type == p.KEYDOWN:
+                if event.key == K_ESCAPE:
+                    menu_s = False
+                    gameOver=True
+            if event.type == p.MOUSEBUTTONDOWN:
+
+                ############ control de los botones
+
+                if mazesBtn.isOver(pos):
+                    listaMuros = construir_mapa(mapa, y)
+                    listaPuntos = construir_puntos(mapa, y)
+                    validPositions = [(muro[1] - verticalStep/4,muro[0] - horizontalStep/4) for muro in listaPuntos]
+                    startPosition = validPositions[0]
+                    objecitvePosition = validPositions[-1]
+                    Astaragent = Astar.AstarPath(startPosition,objecitvePosition,Alto,Ancho,y,validPositions)
+                    pause = False
+                    route=[]
+                    found=False
+                    state = 0
+                    on = True
+                    start_tick=p.time.get_ticks()
+                    changescn("selectMaze")
+
+                if importBtn.isOver(pos):
+                    changescn("importMaze")
+
+                if exitBtn.isOver(pos):
+                    menu_s = False
+                    gameOver = True
+
+                if backBtn.isOver(pos):
+                    changescn("menu")
+
+
+        # Refresh Screen
+        p.display.flip()
+
+mainLoop_s= bool
+def mainloop():
+
+    global mainLoop_s, menu_s, first, gameOver, listaMuros, listaPuntos, pause, validPositions, startPosition, objecitvePosition, Astaragent, Ancho, Alto, gameOver, timer_surf, found, on, time_hms, route, state, start_tick
+
+    while mainLoop_s:
+
+
+        reloj.tick(30)
+
+        for event in p.event.get():
+            if event.type == p.QUIT:
+                mainLoop_s=False
+                gameOver=True
+                
+            if event.type == p.KEYDOWN:
+                if event.key == K_ESCAPE:
+                    mainLoop_s=False
+                    changescn("menu")
+            if event.type == p.MOUSEBUTTONDOWN:
+                on = False
+                pause = True
+
+
+        while pause:
+
+            for event in p.event.get():
+                if event.type == p.QUIT:
+                    mainLoop_s=False
+                    gameOver=True
+                if event.type == p.KEYDOWN:
+                    if event.key == K_ESCAPE:
+                        mainLoop_s=False
+                        changescn("menu")
+            if event.type == p.MOUSEBUTTONUP:
+                on = True
+                pause = False
+
+        while found:
+
+            for event in p.event.get():
+                if event.type == p.QUIT:
+                        mainLoop_s=False
+                        gameOver=True
+                        on= False
+                        found = False
+                if event.type == p.KEYDOWN:
+                    if event.key == K_ESCAPE:
+                        on= False
+                        found = False
+                        mainLoop_s=False
+                        changescn("menu")
+
+
+        if on:
+            # get the amount of ticks(milliseconds) that passed from the start
+            time_ms = p.time.get_ticks() - start_tick
+            new_hms = (time_ms//(1000*60))%60, (time_ms//1000)%60, int(((time_ms/1000)-(time_ms//1000))*1000)
+            if new_hms != time_hms:
+                time_hms = new_hms
+                timer_surf = timer_font.render(f'{time_hms[0]:02d}:{time_hms[1]:02d}:{time_hms[2]:02}', True, (255, 255, 255))
+
+        p.display.update()
+
+        #-------------Fondo------------------
+        ventana.fill(PISO)
+        #------------Dibujo------------------
+        dibujar_mapa (ventana , listaMuros, listaPuntos)
+
+        p.draw.rect(ventana,ROJO,p.Rect(startPosition[1],startPosition[0],(Ancho/y),(Alto/y)),5,15)
+        p.draw.rect(ventana,VERDE,p.Rect(objecitvePosition[1] ,objecitvePosition[0],(Ancho/y),(Alto/y)),5,15)
+
+        
+        #Astar
+        if state == 0:
+            state = Astaragent.explore()
+
+        if state in [0,1]:
+            for item in Astaragent.fringe.queue:
+                route.append(p.Rect(item.position[1] + (Ancho/(4*y)),item.position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
+            for r in route:
+                p.draw.rect(ventana,FRONTERA,r,0,10)
+            for item in Astaragent.fringe.queue:
+                p.draw.rect(ventana,BLANCO,p.Rect(item.position[1] + (Ancho/(4*y)),item.position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))),0,10)
+
+        if state not in [0,-1]:
+            for r in route:
+                p.draw.rect(ventana,FRONTERA,r,0,10)
+            for position in state[0].actualPath:
+                p.draw.rect(ventana,BLANCO,p.Rect(position[1] + (Ancho/(4*y)),position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))),0,10)
+            found= True
+
+        ventana.blit(timer_surf, (Ancho/2.3, Alto/1000))
+
+        p.display.flip()
 
 # STARTING POINT AND OBJECTIVE
 # THEY ARE GIVEN IN (y,x) AND ALL THE CODE USES THAT COORDINATE DISTRIBUTION
@@ -99,109 +400,99 @@ gameOver = False
 #     objecitvePosition = (2 * (Alto/y), 3 * (Ancho/y))
 
 
-horizontalStep = Ancho/y
-verticalStep = Alto/y
+# horizontalStep = Ancho/y
+# verticalStep = Alto/y
 
 
-#startPosition = (0 * (Alto/y), 1 * (Ancho/y))
-#objecitvePosition = (Alto - 1 * (Alto/y), Ancho - 2 * (Ancho/y))
+# listaMuros = construir_mapa(mapa, y)
+# listaPuntos = construir_puntos(mapa, y)
+
+# validPositions = [(muro[1] - verticalStep/4,muro[0] - horizontalStep/4) for muro in listaPuntos]
+
+# startPosition = validPositions[0]
+# objecitvePosition = validPositions[-1]
+
+# DFSagent = DFS.DFSPath(startPosition,objecitvePosition,Alto,Ancho,y,validPositions)
+# BFSagent = BFS.BFSPath(startPosition,objecitvePosition,Alto,Ancho,y,validPositions)
+# IDDFSagent = IDDFS.IDDFSPath(startPosition,objecitvePosition,Alto,Ancho,y,validPositions)
+# UCSagent = UCS.UCSPath(startPosition,objecitvePosition,Alto,Ancho,y,validPositions)
+# Greedyagent = Greedy.GreedyPath(startPosition,objecitvePosition,Alto,Ancho,y,validPositions)
+# Astaragent = Astar.AstarPath(startPosition,objecitvePosition,Alto,Ancho,y,validPositions)
 
 
+# time_hms = 0, 0, 0
+# timer_surf = timer_font.render(f'{time_hms[0]:02d}:{time_hms[1]:02d}:{time_hms[2]:02d}', True, (255, 255, 255))
 
-
-listaMuros = construir_mapa(mapa, y)
-listaPuntos = construir_puntos(mapa, y)
-
-validPositions = [(muro[1] - verticalStep/4,muro[0] - horizontalStep/4) for muro in listaPuntos]
-
-startPosition = validPositions[0]
-objecitvePosition = validPositions[-1]
-
-DFSagent = DFS.DFSPath(startPosition,objecitvePosition,Alto,Ancho,y,validPositions)
-BFSagent = BFS.BFSPath(startPosition,objecitvePosition,Alto,Ancho,y,validPositions)
-IDDFSagent = IDDFS.IDDFSPath(startPosition,objecitvePosition,Alto,Ancho,y,validPositions)
-UCSagent = UCS.UCSPath(startPosition,objecitvePosition,Alto,Ancho,y,validPositions)
-Greedyagent = Greedy.GreedyPath(startPosition,objecitvePosition,Alto,Ancho,y,validPositions)
-Astaragent = Astar.AstarPath(startPosition,objecitvePosition,Alto,Ancho,y,validPositions)
-
-
-timer_font = p.font.SysFont("Calibri", 40)
-
-time_hms = 0, 0, 0
-timer_surf = timer_font.render(f'{time_hms[0]:02d}:{time_hms[1]:02d}:{time_hms[2]:02d}', True, (255, 255, 255))
-
-route=[]
-found=False
-state = 0
-start_tick=p.time.get_ticks()
-on = True
-pause = False
+# route=[]
+# found=False
+# state = 0
+# start_tick=p.time.get_ticks()
+# on = True
+# pause = False
 
 while not gameOver:
 
 
 
-    reloj.tick(30)
+    # reloj.tick(30)
 
 
-    for event in p.event.get():
-        if event.type == p.QUIT:
-            gameOver=True
-        if event.type == p.KEYDOWN:
-            if event.key == K_ESCAPE:
-                gameOver=True
-        if event.type == p.MOUSEBUTTONDOWN:
-            on = False
-            pause = True
+    # for event in p.event.get():
+    #     if event.type == p.QUIT:
+    #         gameOver=True
+    #     if event.type == p.KEYDOWN:
+    #         if event.key == K_ESCAPE:
+    #             gameOver=True
+    #     if event.type == p.MOUSEBUTTONDOWN:
+    #         on = False
+    #         pause = True
 
 
-    while pause:
+    # while pause:
 
-        for event in p.event.get():
-            if event.type == p.QUIT:
-                gameOver=True
-            if event.type == p.KEYDOWN:
-                if event.key == K_ESCAPE:
-                    gameOver=True
-        if event.type == p.MOUSEBUTTONUP:
-            on = True
-            pause = False
+    #     for event in p.event.get():
+    #         if event.type == p.QUIT:
+    #             gameOver=True
+    #         if event.type == p.KEYDOWN:
+    #             if event.key == K_ESCAPE:
+    #                 gameOver=True
+    #     if event.type == p.MOUSEBUTTONUP:
+    #         on = True
+    #         pause = False
 
-    while found:
+    # while found:
 
-        for event in p.event.get():
-            if event.type == p.QUIT:
-                    gameOver=True
-                    on= False
-                    found = False
-            if event.type == p.KEYDOWN:
-                if event.key == K_ESCAPE:
-                    gameOver=True
-                    on= False
-                    found = False
+    #     for event in p.event.get():
+    #         if event.type == p.QUIT:
+    #                 gameOver=True
+    #                 on= False
+    #                 found = False
+    #         if event.type == p.KEYDOWN:
+    #             if event.key == K_ESCAPE:
+    #                 gameOver=True
+    #                 on= False
+    #                 found = False
 
-    if on:
-        # get the amount of ticks(milliseconds) that passed from the start
-        time_ms = p.time.get_ticks() - start_tick
-        new_hms = (time_ms//(1000*60))%60, (time_ms//1000)%60, int(((time_ms/1000)-(time_ms//1000))*1000)
-        if new_hms != time_hms:
-            time_hms = new_hms
-            timer_surf = timer_font.render(f'{time_hms[0]:02d}:{time_hms[1]:02d}:{time_hms[2]:02}', True, (255, 255, 255))
-
-
-
-    p.display.update()
-
-    #-------------Fondo------------------
-    ventana.fill(PISO)
-    #------------Dibujo------------------
-    dibujar_mapa (ventana , listaMuros, listaPuntos)
+    # if on:
+    #     # get the amount of ticks(milliseconds) that passed from the start
+    #     time_ms = p.time.get_ticks() - start_tick
+    #     new_hms = (time_ms//(1000*60))%60, (time_ms//1000)%60, int(((time_ms/1000)-(time_ms//1000))*1000)
+    #     if new_hms != time_hms:
+    #         time_hms = new_hms
+    #         timer_surf = timer_font.render(f'{time_hms[0]:02d}:{time_hms[1]:02d}:{time_hms[2]:02}', True, (255, 255, 255))
+    #     p.display.update()
 
 
 
 
-    p.draw.rect(ventana,ROJO,p.Rect(startPosition[1],startPosition[0],(Ancho/y),(Alto/y)),5,15)
-    p.draw.rect(ventana,VERDE,p.Rect(objecitvePosition[1] ,objecitvePosition[0],(Ancho/y),(Alto/y)),5,15)
+    # #-------------Fondo------------------
+    # ventana.fill(PISO)
+    # #------------Dibujo------------------
+    # dibujar_mapa (ventana , listaMuros, listaPuntos)
+
+
+    # p.draw.rect(ventana,ROJO,p.Rect(startPosition[1],startPosition[0],(Ancho/y),(Alto/y)),5,15)
+    # p.draw.rect(ventana,VERDE,p.Rect(objecitvePosition[1] ,objecitvePosition[0],(Ancho/y),(Alto/y)),5,15)
 
 
 
@@ -300,35 +591,35 @@ while not gameOver:
     #     for position in Greedyagent.actualPath:
     #         p.draw.rect(ventana,BLANCO,p.Rect(position[1] + (Ancho/(4*y)),position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))),0,10)
     #     found= True
-    
+
 
 
 
     #Astar
-    if state == 0:
-        state = Astaragent.explore()
+    # if state == 0:
+    #     state = Astaragent.explore()
 
-    if state in [0,1]:
-        for item in Astaragent.fringe.queue:
-            route.append(p.Rect(item.position[1] + (Ancho/(4*y)),item.position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
-        for r in route:
-            p.draw.rect(ventana,FRONTERA,r,0,10)  
-        for item in Astaragent.fringe.queue:
-            p.draw.rect(ventana,BLANCO,p.Rect(item.position[1] + (Ancho/(4*y)),item.position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))),0,10)
+    # if state in [0,1]:
+    #     for item in Astaragent.fringe.queue:
+    #         route.append(p.Rect(item.position[1] + (Ancho/(4*y)),item.position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))))
+    #     for r in route:
+    #         p.draw.rect(ventana,FRONTERA,r,0,10)
+    #     for item in Astaragent.fringe.queue:
+    #         p.draw.rect(ventana,BLANCO,p.Rect(item.position[1] + (Ancho/(4*y)),item.position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))),0,10)
 
-    if state not in [0,-1]:
-        for r in route:
-            p.draw.rect(ventana,FRONTERA,r,0,10)  
-        for position in state[0].actualPath:
-            p.draw.rect(ventana,BLANCO,p.Rect(position[1] + (Ancho/(4*y)),position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))),0,10)
-        found= True
-    
-
-    ventana.blit(timer_surf, (Ancho/2.3, Alto/1000))
-
-    p.display.flip()
+    # if state not in [0,-1]:
+    #     for r in route:
+    #         p.draw.rect(ventana,FRONTERA,r,0,10)
+    #     for position in state[0].actualPath:
+    #         p.draw.rect(ventana,BLANCO,p.Rect(position[1] + (Ancho/(4*y)),position[0] + (Alto/(4*y)),(Ancho/(2*y)),(Alto/(2*y))),0,10)
+    #     found= True
 
 
+    # ventana.blit(timer_surf, (Ancho/2.3, Alto/1000))
+
+    # p.display.flip()
+
+    menu()
 
 p.quit()
 
