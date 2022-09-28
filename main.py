@@ -1,21 +1,12 @@
-from importlib.resources import path
-from typing import overload
 import pygame as p
 import Functions.Read_Maze as rm
-import collections
-import numpy as np
 
 from pygame.locals import *
-
-from datetime import time, timedelta
-
-from queue import PriorityQueue
 
 from Functions import UCS,IDDFS,DFS,BFS,Greedy,Astar
 
 
 p.init()
-
 
 
 
@@ -336,7 +327,6 @@ while not gameOver:
     ventana.blit(timer_surf, (Ancho/2.3, Alto/1000))
 
     p.display.flip()
-
 
 
 
