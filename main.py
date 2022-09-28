@@ -505,8 +505,8 @@ def mainloop():
                     changescn("menu")
 
         while pause:
-
             for event in p.event.get():
+                pos = p.mouse.get_pos()
                 if event.type == p.QUIT:
                     mainLoop_s=False
                     gameOver=True
@@ -517,21 +517,27 @@ def mainloop():
             if event.type == p.MOUSEBUTTONUP:
                 on = True
                 pause = False
+                if backBtn.isOver(pos):
+                    changescn("menu")
 
         while found:
-
             for event in p.event.get():
+                pos = p.mouse.get_pos()
                 if event.type == p.QUIT:
                         mainLoop_s=False
-                        gameOver=True
                         on= False
                         found = False
+                        gameOver=True
                 if event.type == p.KEYDOWN:
                     if event.key == K_ESCAPE:
                         on= False
                         found = False
                         mainLoop_s=False
                         changescn("menu")
+                if event.type == p.MOUSEBUTTONUP:
+                    if backBtn.isOver(pos):
+                        changescn("menu")
+                    
 
 
         if on:
