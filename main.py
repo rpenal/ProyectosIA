@@ -55,6 +55,7 @@ ventana = p.display.set_mode((1300,700))
 Pantalla = p.display.get_surface()
 Ancho = Pantalla.get_width()
 Alto= Pantalla.get_height()
+c= 0
 
 p.display.set_caption('MazeSolver')
 reloj = p.time.Clock()
@@ -219,7 +220,7 @@ menu_s = bool
 def menu():
 
 
-    global menu_s, gameOver, selectAlg_s, selectMaze_s, mainLoop_s
+    global menu_s, gameOver, selectAlg_s, selectMaze_s, mainLoop_s, importMaze_s
 
     ventana.blit(menuBg, (0, 0))
     mazesBtn = button(RED, 550, 270, 200, 25, "Mazes")
@@ -303,6 +304,9 @@ def selectMaze():
             pos = p.mouse.get_pos() # toma la posicion del mouse
 
             if event.type == p.QUIT:
+                importMaze_s = False
+                mainLoop_s = False
+                selectAlg_s = False
                 selectMaze_s= False
                 menu_s = False
                 gameOver = True
@@ -413,7 +417,7 @@ def selectMaze():
 selectAlg_s= bool
 def selectAlg():
 
-    global menu_s, selectMaze_s, selectAlg_s, gameOver, Astaragent, DFSagent, BFSagent, IDDFSagent, UCSagent, Greedyagent, Ancho, Alto, gameOver, Alg, y, validPositions, startPosition, objecitvePosition, start_tick, c
+    global menu_s, selectMaze_s, selectAlg_s, importMaze_s, mainLoop_s, gameOver, Astaragent, DFSagent, BFSagent, IDDFSagent, UCSagent, Greedyagent, Ancho, Alto, gameOver, Alg, y, validPositions, startPosition, objecitvePosition, start_tick, c
 
     DFSBtn = button(RED, 550, 270, 200, 25, "DFS")
     BFSBtn = button(RED, 550, 300, 200, 25, "BFS")
@@ -444,8 +448,11 @@ def selectAlg():
             pos = p.mouse.get_pos() # toma la posicion del mouse
 
             if event.type == p.QUIT:
+                importMaze_s = False
+                mainLoop_s = False
                 selectAlg_s = False
                 selectMaze_s= False
+                menu_s = False
                 gameOver = True
             if event.type == p.KEYDOWN:
                 if event.key == K_ESCAPE:
@@ -502,7 +509,7 @@ def selectAlg():
 importMaze_s= bool
 def importMaze():
 
-    global menu_s, gameOver, importMaze_s, listaMuros, listaPuntos, pause, validPositions, startPosition, objecitvePosition, Ancho, Alto, found, on, route, state, start_tick, verticalStep, horizontalStep, y, start_tick, c
+    global menu_s, gameOver, importMaze_s, mainLoop_s, selectAlg_s, selectMaze_s, listaMuros, listaPuntos, pause, validPositions, startPosition, objecitvePosition, Ancho, Alto, found, on, route, state, start_tick, verticalStep, horizontalStep, y, start_tick, c
 
     c= 0
     ImportBtn = button(RED, 550, 270, 200, 25, "Import")
@@ -523,7 +530,11 @@ def importMaze():
             pos = p.mouse.get_pos() # toma la posicion del mouse
 
             if event.type == p.QUIT:
-                importMaze_s= False
+                importMaze_s = False
+                mainLoop_s = False
+                selectAlg_s = False
+                selectMaze_s= False
+                menu_s = False
                 gameOver = True
             if event.type == p.KEYDOWN:
                 if event.key == K_ESCAPE:
@@ -567,7 +578,7 @@ def importMaze():
 mainLoop_s= bool
 def mainloop():
 
-    global mainLoop_s, menu_s, gameOver, listaMuros, listaPuntos, pause, validPositions, startPosition, objecitvePosition, Astaragent, DFSagent, BFSagent, IDDFSagent, UCSagent, Greedyagent, Ancho, Alto, gameOver, timer_surf, found, on, time_hms, route, state, start_tick, Alg
+    global mainLoop_s, menu_s, importMaze_s, selectMaze_s, selectAlg_s, gameOver, listaMuros, listaPuntos, pause, validPositions, startPosition, objecitvePosition, Astaragent, DFSagent, BFSagent, IDDFSagent, UCSagent, Greedyagent, Ancho, Alto, gameOver, timer_surf, found, on, time_hms, route, state, start_tick, Alg
 
     time_hms = 0, 0, 0
     timer_surf = timer_font.render(f'{time_hms[0]:02d}:{time_hms[1]:02d}:{time_hms[2]:02d}', True, (255, 255, 255))
@@ -581,9 +592,13 @@ def mainloop():
         for event in p.event.get():
             pos = p.mouse.get_pos()
             if event.type == p.QUIT:
-                mainLoop_s=False
-                gameOver=True
-                
+                importMaze_s = False
+                mainLoop_s = False
+                selectAlg_s = False
+                selectMaze_s= False
+                menu_s = False
+                gameOver = True
+
             if event.type == p.KEYDOWN:
                 if event.key == K_ESCAPE:
                     changescn("menu")
@@ -597,8 +612,11 @@ def mainloop():
             for event in p.event.get():
                 pos = p.mouse.get_pos()
                 if event.type == p.QUIT:
-                    mainLoop_s=False
-                    gameOver=True
+                    importMaze_s = False
+                    mainLoop_s = False
+                    selectAlg_s = False
+                    selectMaze_s= False
+                    gameOver = True
                 if event.type == p.KEYDOWN:
                     if event.key == K_ESCAPE:
                         changescn("menu")
@@ -612,7 +630,10 @@ def mainloop():
             for event in p.event.get():
                 pos = p.mouse.get_pos()
                 if event.type == p.QUIT:
-                        mainLoop_s=False
+                        importMaze_s = False
+                        mainLoop_s = False
+                        selectAlg_s = False
+                        selectMaze_s= False
                         on= False
                         found = False
                         gameOver=True
@@ -788,4 +809,5 @@ while not gameOver:
     menu()
 
 p.quit()
+
 
