@@ -56,7 +56,7 @@ Pantalla = p.display.get_surface()
 Ancho = Pantalla.get_width()
 Alto= Pantalla.get_height()
 c= 0
-
+overticks= 0
 p.display.set_caption('MazeSolver')
 reloj = p.time.Clock()
 
@@ -275,7 +275,7 @@ def menu():
 selectMaze_s= bool
 def selectMaze():
 
-    global menu_s, selectMaze_s, gameOver, listaMuros, listaPuntos, pause, validPositions, startPosition, objecitvePosition, Ancho, Alto, found, on, route, state, start_tick, verticalStep, horizontalStep, y, start_tick
+    global menu_s, selectMaze_s, importMaze_s, mainLoop_s, selectAlg_s, gameOver, listaMuros, listaPuntos, pause, validPositions, startPosition, objecitvePosition, Ancho, Alto, found, on, route, state, start_tick, verticalStep, horizontalStep, y, start_tick
 
     mazes5Btn = button(RED, 550, 270, 200, 25, "Maze 5x5")
     mazes10Btn = button(RED, 550, 300, 200, 25, "Maze 10x10")
@@ -578,14 +578,13 @@ def importMaze():
 mainLoop_s= bool
 def mainloop():
 
-    global mainLoop_s, menu_s, importMaze_s, selectMaze_s, selectAlg_s, gameOver, listaMuros, listaPuntos, pause, validPositions, startPosition, objecitvePosition, Astaragent, DFSagent, BFSagent, IDDFSagent, UCSagent, Greedyagent, Ancho, Alto, gameOver, timer_surf, found, on, time_hms, route, state, start_tick, Alg
+    global mainLoop_s, menu_s, importMaze_s, selectMaze_s, selectAlg_s, gameOver, listaMuros, listaPuntos, pause, validPositions, startPosition, objecitvePosition, Astaragent, DFSagent, BFSagent, IDDFSagent, UCSagent, Greedyagent, Ancho, Alto, gameOver, timer_surf, found, on, time_hms, route, state, start_tick, Alg, overticks
 
     time_hms = 0, 0, 0
     timer_surf = timer_font.render(f'{time_hms[0]:02d}:{time_hms[1]:02d}:{time_hms[2]:02d}', True, (255, 255, 255))
     backBtn = button(RED, 0, 685, 100, 15, "Back")
 
     while mainLoop_s:
-
 
         reloj.tick(30)
 
@@ -603,6 +602,8 @@ def mainloop():
                 if event.key == K_ESCAPE:
                     changescn("menu")
             if event.type == p.MOUSEBUTTONDOWN:
+                if not pause:
+                    overticks1= time_ms
                 on = False
                 pause = True
                 if backBtn.isOver(pos):
@@ -622,6 +623,7 @@ def mainloop():
                         changescn("menu")
             if event.type == p.MOUSEBUTTONUP:
                 on = True
+                overticks= (p.time.get_ticks()- start_tick) - overticks1
                 pause = False
                 if backBtn.isOver(pos):
                     changescn("menu")
@@ -650,7 +652,7 @@ def mainloop():
 
         if on:
             # get the amount of ticks(milliseconds) that passed from the start
-            time_ms = p.time.get_ticks() - start_tick
+            time_ms = (p.time.get_ticks() - start_tick) - overticks
             new_hms = (time_ms//(1000*60))%60, (time_ms//1000)%60, int(((time_ms/1000)-(time_ms//1000))*1000)
             if new_hms != time_hms:
                 time_hms = new_hms
