@@ -182,7 +182,7 @@ input_box1 = InputBox(300, 300, 140, 32)
 def changescn(scn):
 
     # ~ continuar haciendo lo mismo que abajo
-    global menu_s, importMaze_s, mainLoop_s, selectMaze_s, selectAlg_s
+    global menu_s, importMaze_s, mainLoop_s, selectMaze_s, selectAlg_s, importMaze_s
     menu_s = mainLoop_s= importMaze_s = selectMaze_s= selectAlg_s=False
 
     if scn == "menu":
