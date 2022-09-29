@@ -208,7 +208,7 @@ def changescn(scn):
 
 def openFile():
  
-    archivo = filedialog.askopenfilename(title="Import Maze", initialdir="C:/", filetypes = (("CSV Files","*.csv"),("All","*.*")))
+    archivo = filedialog.askopenfilename(title="Import Maze", initialdir="C:/", filetypes = (("CSV Files","*.csv"),))
     
     return archivo
 
