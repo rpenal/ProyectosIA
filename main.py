@@ -1,3 +1,4 @@
+from tkinter import filedialog
 import pygame as p
 import Functions.Read_Maze as rm
 
@@ -190,7 +191,7 @@ def changescn(scn):
 
     elif scn == "importMaze":
         importMaze_s = True
-        #importMaze()
+        importMaze()
 
     elif scn == "selectMaze":
         selectMaze_s = True
@@ -203,6 +204,12 @@ def changescn(scn):
     elif scn == "mainLoop":
         mainLoop_s = True
         mainloop()
+
+def openFile():
+ 
+    archivo = filedialog.askopenfilename(title="Import Maze", initialdir="C:/", filetypes = (("CSV Files","*.csv"),("All","*.*")))
+    
+    return archivo
 
 ######### ESCENAS ##########
 
@@ -254,6 +261,7 @@ def menu():
                     changescn("importMaze")
 
                 if exitBtn.isOver(pos):
+                    importMaze_s = False
                     mainLoop_s = False
                     selectAlg_s = False
                     selectMaze_s= False
@@ -273,6 +281,7 @@ def selectMaze():
     mazes50Btn = button(RED, 550, 330, 200, 25, "Maze 50x50")
     mazes100Btn = button(RED, 550, 360, 200, 25, "Maze 100x100")
     mazes400Btn = button(RED, 550, 390, 200, 25, "Maze 400x400")
+    backBtn = button(RED, 0, 685, 100, 15, "Back")
 
 
     while selectMaze_s:
@@ -284,6 +293,7 @@ def selectMaze():
         mazes50Btn.draw(ventana, (0,0,0))
         mazes100Btn.draw(ventana, (0,0,0))
         mazes400Btn.draw(ventana, (0,0,0))
+        backBtn.draw(ventana, (0,0,0))
 
         
 
@@ -298,8 +308,6 @@ def selectMaze():
                 gameOver = True
             if event.type == p.KEYDOWN:
                 if event.key == K_ESCAPE:
-                    selectMaze_s= False
-                    menu_s = True
                     changescn("menu")
             if event.type == p.MOUSEBUTTONDOWN:
 
@@ -395,6 +403,9 @@ def selectMaze():
                     on = True
                     changescn("selectAlg")
 
+                if backBtn.isOver(pos):
+                    changescn("menu")
+
         # Refresh Screen
         p.display.flip()
 
@@ -402,7 +413,7 @@ def selectMaze():
 selectAlg_s= bool
 def selectAlg():
 
-    global menu_s, selectMaze_s, selectAlg_s, gameOver, Astaragent, DFSagent, BFSagent, IDDFSagent, UCSagent, Greedyagent, Ancho, Alto, gameOver, Alg, y, validPositions, startPosition, objecitvePosition, start_tick
+    global menu_s, selectMaze_s, selectAlg_s, gameOver, Astaragent, DFSagent, BFSagent, IDDFSagent, UCSagent, Greedyagent, Ancho, Alto, gameOver, Alg, y, validPositions, startPosition, objecitvePosition, start_tick, c
 
     DFSBtn = button(RED, 550, 270, 200, 25, "DFS")
     BFSBtn = button(RED, 550, 300, 200, 25, "BFS")
@@ -410,7 +421,7 @@ def selectAlg():
     GreedyBtn = button(RED, 550, 360, 200, 25, "Greedy")
     IDDFSBtn = button(RED, 550, 390, 200, 25, "IDDFS")
     AstarBtn = button(RED, 550, 420, 200, 25, "A*")
-
+    backBtn = button(RED, 0, 685, 100, 15, "Back")
 
     while selectAlg_s:
 
@@ -424,6 +435,8 @@ def selectAlg():
         GreedyBtn.draw(ventana, (0,0,0))
         IDDFSBtn.draw(ventana, (0,0,0))
         AstarBtn.draw(ventana, (0,0,0))
+        backBtn.draw(ventana, (0,0,0))
+       
 
         ##### EVENTOS #####
 
@@ -436,9 +449,6 @@ def selectAlg():
                 gameOver = True
             if event.type == p.KEYDOWN:
                 if event.key == K_ESCAPE:
-                    selectAlg_s = False
-                    selectMaze_s= False
-                    menu_s = True
                     changescn("menu")
             if event.type == p.MOUSEBUTTONDOWN:
 
@@ -480,8 +490,79 @@ def selectAlg():
                     start_tick=p.time.get_ticks()
                     changescn("mainLoop")
 
+                if backBtn.isOver(pos) and not c:
+                    changescn("selectMaze")
+
+                if backBtn.isOver(pos) and c:
+                    changescn("menu")
+
         # Refresh Screen
         p.display.flip()
+
+importMaze_s= bool
+def importMaze():
+
+    global menu_s, gameOver, importMaze_s, listaMuros, listaPuntos, pause, validPositions, startPosition, objecitvePosition, Ancho, Alto, found, on, route, state, start_tick, verticalStep, horizontalStep, y, start_tick, c
+
+    c= 0
+    ImportBtn = button(RED, 550, 270, 200, 25, "Import")
+    backBtn = button(RED, 0, 685, 100, 15, "Back")
+
+    while importMaze_s:
+
+        ##### RENDER #####
+
+        ventana.fill(PISO)
+        ventana.blit(menuBg, (0, 0))
+        ImportBtn.draw(ventana, (0,0,0))
+        backBtn.draw(ventana, (0,0,0))
+        
+        ##### EVENTOS #####
+
+        for event in p.event.get():
+            pos = p.mouse.get_pos() # toma la posicion del mouse
+
+            if event.type == p.QUIT:
+                importMaze_s= False
+                gameOver = True
+            if event.type == p.KEYDOWN:
+                if event.key == K_ESCAPE:
+                    changescn("menu")
+            if event.type == p.MOUSEBUTTONDOWN:
+
+                ############ control de los botones
+
+                if ImportBtn.isOver(pos):
+                    try:
+                        MazeRoute= openFile()
+                        m= rm.ReadMazePath(MazeRoute)
+                        y= len(m)
+                        mapa = rm.ConvertMatrixToMap(m)
+                        listaMuros = construir_mapa(mapa, y)
+                        listaPuntos = construir_puntos(mapa, y)
+                        horizontalStep= Ancho/y
+                        verticalStep= Alto/y
+                        validPositions = [(muro[1] - verticalStep/4,muro[0] - horizontalStep/4) for muro in listaPuntos]
+                        startPosition = validPositions[0]
+                        objecitvePosition = validPositions[-1]
+                        pause = False
+                        route=[]
+                        found=False
+                        state= 0
+                        on = True
+                        c= 1
+                        changescn("selectAlg")
+                    except:
+                        pass
+                if backBtn.isOver(pos):
+                    changescn("menu")
+                    
+
+        # Refresh Screen
+        p.display.flip()
+
+
+
 
 mainLoop_s= bool
 def mainloop():
@@ -505,7 +586,6 @@ def mainloop():
                 
             if event.type == p.KEYDOWN:
                 if event.key == K_ESCAPE:
-                    mainLoop_s=False
                     changescn("menu")
             if event.type == p.MOUSEBUTTONDOWN:
                 on = False
@@ -521,7 +601,6 @@ def mainloop():
                     gameOver=True
                 if event.type == p.KEYDOWN:
                     if event.key == K_ESCAPE:
-                        mainLoop_s=False
                         changescn("menu")
             if event.type == p.MOUSEBUTTONUP:
                 on = True
@@ -541,7 +620,6 @@ def mainloop():
                     if event.key == K_ESCAPE:
                         on= False
                         found = False
-                        mainLoop_s=False
                         changescn("menu")
                 if event.type == p.MOUSEBUTTONUP:
                     if backBtn.isOver(pos):
