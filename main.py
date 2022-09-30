@@ -244,12 +244,20 @@ def menu():
             pos = p.mouse.get_pos() # toma la posicion del mouse
 
             if event.type == p.QUIT:
-                gameOver = True
+                importMaze_s = False
+                mainLoop_s = False
+                selectAlg_s = False
+                selectMaze_s= False
                 menu_s = False
+                gameOver = True
             if event.type == p.KEYDOWN:
                 if event.key == K_ESCAPE:
-                    gameOver=True
+                    importMaze_s = False
+                    mainLoop_s = False
+                    selectAlg_s = False
+                    selectMaze_s= False
                     menu_s = False
+                    gameOver=True
             if event.type == p.MOUSEBUTTONDOWN:
 
                 ############ control de los botones
