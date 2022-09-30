@@ -10,7 +10,6 @@ from Functions import UCS,IDDFS,DFS,BFS,Greedy,Astar
 p.init()
 
 
-
 #-------------------Muros------------------------
 def construir_mapa(mapa, n):
     listaMuros = []
@@ -55,7 +54,7 @@ ventana = p.display.set_mode((1300,700))
 Pantalla = p.display.get_surface()
 Ancho = Pantalla.get_width()
 Alto= Pantalla.get_height()
-c= 0
+c= False
 overticks= 0
 p.display.set_caption('MazeSolver')
 reloj = p.time.Clock()
@@ -417,7 +416,7 @@ def selectMaze():
 selectAlg_s= bool
 def selectAlg():
 
-    global menu_s, selectMaze_s, selectAlg_s, importMaze_s, mainLoop_s, gameOver, Astaragent, DFSagent, BFSagent, IDDFSagent, UCSagent, Greedyagent, Ancho, Alto, gameOver, Alg, y, validPositions, startPosition, objecitvePosition, start_tick, c
+    global menu_s, selectMaze_s, selectAlg_s, importMaze_s, mainLoop_s, gameOver, Astaragent, DFSagent, BFSagent, IDDFSagent, UCSagent, Greedyagent, Ancho, Alto, gameOver, Alg, y, validPositions, startPosition, objecitvePosition, start_tick, c, overticks
 
     DFSBtn = button(RED, 550, 270, 200, 25, "DFS")
     BFSBtn = button(RED, 550, 300, 200, 25, "BFS")
@@ -464,43 +463,49 @@ def selectAlg():
                 if DFSBtn.isOver(pos):
                     DFSagent = DFS.DFSPath(startPosition,objecitvePosition,Alto,Ancho,y,validPositions)
                     Alg= 1
+                    overticks = 0
                     start_tick=p.time.get_ticks()
                     changescn("mainLoop")
 
                 if BFSBtn.isOver(pos):
                     BFSagent = BFS.BFSPath(startPosition,objecitvePosition,Alto,Ancho,y,validPositions)
                     Alg= 2
+                    overticks = 0
                     start_tick=p.time.get_ticks()
                     changescn("mainLoop")
 
                 if UCSBtn.isOver(pos):
                     UCSagent = UCS.UCSPath(startPosition,objecitvePosition,Alto,Ancho,y,validPositions)
                     Alg= 3
+                    overticks = 0
                     start_tick=p.time.get_ticks()
                     changescn("mainLoop")
 
                 if GreedyBtn.isOver(pos):
                     Greedyagent = Greedy.GreedyPath(startPosition,objecitvePosition,Alto,Ancho,y,validPositions)
                     Alg= 4
+                    overticks = 0
                     start_tick=p.time.get_ticks()
                     changescn("mainLoop")
 
                 if IDDFSBtn.isOver(pos):
                     IDDFSagent = IDDFS.IDDFSPath(startPosition,objecitvePosition,Alto,Ancho,y,validPositions)
                     Alg= 5
+                    overticks = 0
                     start_tick=p.time.get_ticks()
                     changescn("mainLoop")
 
                 if AstarBtn.isOver(pos):
                     Astaragent = Astar.AstarPath(startPosition,objecitvePosition,Alto,Ancho,y,validPositions)
                     Alg= 6
+                    overticks = 0
                     start_tick=p.time.get_ticks()
                     changescn("mainLoop")
 
-                if backBtn.isOver(pos) and not c:
+                if backBtn.isOver(pos) and c:
                     changescn("selectMaze")
 
-                if backBtn.isOver(pos) and c:
+                if backBtn.isOver(pos) and not c:
                     changescn("menu")
 
         # Refresh Screen
@@ -511,7 +516,7 @@ def importMaze():
 
     global menu_s, gameOver, importMaze_s, mainLoop_s, selectAlg_s, selectMaze_s, listaMuros, listaPuntos, pause, validPositions, startPosition, objecitvePosition, Ancho, Alto, found, on, route, state, start_tick, verticalStep, horizontalStep, y, start_tick, c
 
-    c= 0
+    c= False
     ImportBtn = button(RED, 550, 270, 200, 25, "Import")
     backBtn = button(RED, 0, 685, 100, 15, "Back")
 
@@ -561,7 +566,7 @@ def importMaze():
                         found=False
                         state= 0
                         on = True
-                        c= 1
+                        c= True
                         changescn("selectAlg")
                     except:
                         pass
@@ -603,7 +608,7 @@ def mainloop():
                     changescn("menu")
             if event.type == p.MOUSEBUTTONDOWN:
                 if not pause:
-                    overticks1= time_ms
+                    overticks1= (p.time.get_ticks() - start_tick) - overticks
                 on = False
                 pause = True
                 if backBtn.isOver(pos):
