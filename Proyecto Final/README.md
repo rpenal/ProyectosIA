@@ -23,3 +23,5 @@ to work under Python 2.x if, for some reason, that is all you have available to 
 Usage
 -----
 For instructions, please watch the YouTube video below.
+
+https://www.youtube.com/watch?v=cW7zWgpHOyM
