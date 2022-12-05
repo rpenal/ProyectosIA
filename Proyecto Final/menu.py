@@ -1,32 +1,32 @@
-import tkinter 
+import tkinter
 import os
 from tkinter import *
 from tkinter.filedialog import askopenfile
 
 def abrir_logico_1():
-    os.system('python3 /home/jostos/Escritorio/IA-UNAL-2022-2/Proyecto_Final_IA/metodo_logico_1.py')
+    os.system('metodo_logico_1.py')
     ventana_metodos_logicos.destroy()
-    
-    
+
+
 
 def abrir_logico_2():
-    os.system('python3 /home/jostos/Escritorio/IA-UNAL-2022-2/Proyecto_Final_IA/metodo_logico_2.py')
+    os.system('metodo_logico_2.py')
     ventana_metodos_logicos.destroy()
 
 def abrir_backtracking_1():
-    os.system('python3 /home/jostos/Escritorio/IA-UNAL-2022-2/Proyecto_Final_IA/enumerative_backtracking.py')
+    os.system('enumerative_backtracking.py')
     ventana_metodos_backtracking.destroy()
 
 def abrir_backtracking_2():
-    os.system('python3 /home/jostos/Escritorio/IA-UNAL-2022-2/Proyecto_Final_IA/backtracking_naive.py')
+    os.system('backtracking_naive.py')
     ventana_metodos_backtracking.destroy()
 
 def abrir_csp_1():
-    os.system('python3 /home/jostos/Escritorio/IA-UNAL-2022-2/Proyecto_Final_IA/csp.py')
+    os.system('csp.py')
     ventana_metodos_csp.destroy()
 
 def abrir_csp_2():
-    os.system('python3 /home/jostos/Escritorio/IA-UNAL-2022-2/Proyecto_Final_IA/annealing.py')
+    os.system('annealing.py')
     ventana_metodos_csp.destroy()
 
 def metodos_logico():
@@ -49,7 +49,7 @@ def metodos_logico():
         command = abrir_logico_1)
     boton_metodo_1.place(x=200, y=270)
 
-    boton_metodo_2 = tkinter.Button(ventana_metodos_logicos,text='Metodo 2',        
+    boton_metodo_2 = tkinter.Button(ventana_metodos_logicos,text='Metodo 2',
         font='Bodoni',
         cursor='hand2',
         relief='flat',
@@ -82,7 +82,7 @@ def metodos_backtracking():
         command = abrir_backtracking_2)
     boton_metodo_1.place(x=200, y=270)
 
-    boton_metodo_2 = tkinter.Button(ventana_metodos_backtracking,text='Metodo 2',        
+    boton_metodo_2 = tkinter.Button(ventana_metodos_backtracking,text='Metodo 2',
         font='Bodoni',
         cursor='hand2',
         relief='flat',
@@ -114,7 +114,7 @@ def metodos_csp():
         command = abrir_csp_1)
     boton_metodo_1.place(x=200, y=270)
 
-    boton_metodo_2 = tkinter.Button(ventana_metodos_csp,text='Metodo 2',        
+    boton_metodo_2 = tkinter.Button(ventana_metodos_csp,text='Metodo 2',
         font='Bodoni',
         cursor='hand2',
         relief='flat',
@@ -135,7 +135,7 @@ def archivo_logico_1():
     fondo_archivo_logico_1 = tkinter.PhotoImage(file='Menu.png')
     fondo_ub_archivo_logico_1 = tkinter.Label(ventana_archivo_logico_1,image=fondo_archivo_logico_1)
     fondo_ub_archivo_logico_1.place(x=0,y=0)
-    boton_archivo = tkinter.Button(text='Cargar Archivo',        
+    boton_archivo = tkinter.Button(text='Cargar Archivo',
         font='Bodoni',
         cursor='hand2',
         relief='flat',
@@ -145,7 +145,7 @@ def archivo_logico_1():
         command = cargar_archivo)
     boton_archivo.place(x=225, y=230)
 
-    boton_iniciar = tkinter.Button(text='Iniciar',        
+    boton_iniciar = tkinter.Button(text='Iniciar',
         font='Bodoni',
         cursor='hand2',
         relief='flat',
@@ -155,7 +155,7 @@ def archivo_logico_1():
         command = abrir_logico_1)
     boton_iniciar.place(x=225, y=290)
 
-    boton_volver = tkinter.Button(text='Volver',        
+    boton_volver = tkinter.Button(text='Volver',
         font='Bodoni',
         cursor='hand2',
         relief='flat',
@@ -167,7 +167,7 @@ def archivo_logico_1():
     ventana_archivo_logico_1.mainloop()
 
 def cargar_archivo():
-    buscar = tkinter.filedialog.askopenfilename(initialdir = '/home/jostos/Escritorio/IA-UNAL-2022-2/Proyecto_Final_IA/nonogramas')
+    buscar = tkinter.filedialog.askopenfilename(initialdir = 'nonogramas')
     fob = open(buscar, 'r')
     global archivo
     archivo = fob.read()
@@ -182,9 +182,9 @@ def inicio():
     ventana_inicio.title('Metodos Logicos')
     fondo_inicio = tkinter.PhotoImage(file='Menu.png')
     fondo_ub_inicio = tkinter.Label(ventana_inicio,image=fondo_inicio)
-    fondo_ub_inicio.place(x=0,y=0)  
+    fondo_ub_inicio.place(x=0,y=0)
 
-    boton_logica = tkinter.Button(text='Metodos Logicos',        
+    boton_logica = tkinter.Button(text='Metodos Logicos',
             font='Bodoni',
             cursor='hand2',
             relief='flat',
@@ -195,7 +195,7 @@ def inicio():
     boton_logica.place(x=150, y=250)
 
 
-    boton_csp = tkinter.Button(text='Metodo CSP',        
+    boton_csp = tkinter.Button(text='Metodo CSP',
             font='Bodoni',
             cursor='hand2',
             relief='flat',
@@ -206,7 +206,7 @@ def inicio():
             )
     boton_csp.place(x=150, y=280)
 
-    boton_backtracking = tkinter.Button(text='Metodos Backtracking',        
+    boton_backtracking = tkinter.Button(text='Metodos Backtracking',
             font='Bodoni',
             cursor='hand2',
             relief='flat',
@@ -225,7 +225,7 @@ label1 = tkinter.Label(ventana, image=fondo)
 label1.place(x=0,y=0)
 ventana.geometry('500x500+700+250')
 ventana.title('Nonogram Solver Menu')
-boton_continuar = tkinter.Button(text='Empezar',        
+boton_continuar = tkinter.Button(text='Empezar',
         font='Bodoni',
         cursor='hand2',
         relief='flat',
