@@ -28,7 +28,6 @@ boton_continuar.place(x=175, y=250)
 ventana.mainloop()
 
 a = str(archivo)
-
 b = a.split()
 rows, cols,temp = [], [], []
 
@@ -64,8 +63,5 @@ for i in range(len(rows)):
 
 for i in range(len(cols)):
     cols[i] = [int(a) for a in cols[i]]
-
-cols = [tuple(it) for it in cols]
-rows = [tuple(it) for it in rows]
 
 

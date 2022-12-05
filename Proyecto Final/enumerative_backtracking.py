@@ -1,9 +1,10 @@
 import numpy as np
 import itertools as it
+import time
 import re
 from csv_lista import rows, cols 
 from typing import List, Dict, Tuple, Set, AnyStr, Type
-
+import matplotlib.pyplot as plt 
 solution_list: List[Type[np.ndarray]] = []
 placements: Dict[str, Dict[int, List[Type[np.ndarray]]]] = {}
 
@@ -276,44 +277,9 @@ def backtrack(solution_array: Type[np.ndarray], row_placements: Dict[int, List[T
 
 
 if __name__ == "__main__":
-    # Easy case 1
-    # row_args = [(1, ), (2, )]
-    # col_args = [(2, ), (1, )]
     
-    # Easy case 2 - non-unique
-    # row_args = [(1,), (2,)]
-    # col_args = [(1, ), (1, ), (1, )]
-    
-    # Medium case 1
-    # row_args = [(2,), (2,), (1,), (1, 1,), (3,)]
-    # col_args = [(1,), (2, 1,), (2, 2,), (1, 1,)]
-    
-    # Medium case 2
-    # row_args = [
-    #     (5,), (1, 3,), (6,), (2, 5,), (3, 4,),
-    #     (3, 7,), (3, 10,), (3, 11,), (5, 7,), (5, 5,),
-    #     (5, 6,), (13,), (9,), (1, 1,), (2, 1, 4,)
-    # ]
-    # col_args = [
-    #     (6,), (8,), (9,), (4,), (6,),
-    #     (2, 5,), (1, 1, 3, 2, 1,), (8, 2,), (1, 7, 2, 1,), (9, 3,),
-    #     (13, 1,), (3, 8, 1,), (8, 1,), (9,), (5,)
-    # ]
-    
-    # Hard case 1
-    '''row_args = [
-        (3, 2, 3, ), (3, 1, 1, 1, 3, ), (1, 5, 2, 1, ), (4, 6, 1, ), (3, 6, ),
-        (1, 4, 7, ), (4, 2, 2, 6, ), (3, 5, ), (2, 1, 3, ), (7, ),
-        (3, 4, 2, ), (1, 2, 3, 4, ), (5, 2, 2, ), (4, 1, 4, ), (5, 5, 1, ),
-        (5, 5, ), (2, 1, 6, ), (1, 2, 2, 7, ), (2, 2, 1, 8, ), (7, 1, 7, )
-    ]
-    col_args = [
-        (3, 4, 1, 3, ), (2, 3, 2, ), (3, 2, 1, ), (1, 1, 1, 7, ), (4, 8, ),
-        (3, 1, 4, 1, ), (4, 1, 4, 1, ), (1, 1, 3, 2, ), (2, 1, 3, 4, ), (1, 2, 1, 1, ),
-        (2, 2, ), (2, 1, 2, ), (4, 3, 4, ), (4, 1, 11, ), (4, 3, 6, ),
-        (5, 2, 6, ), (5, 1, 1, 7, ), (8, 6, ), (10, 1, ), (8, 4, )
-    ]'''
     row_args = rows
+    print(len(rows))
     col_args = cols
     
     # Generate possibilities for each row and column
@@ -347,6 +313,9 @@ if __name__ == "__main__":
         # Backtrack through the rest of the unsolved rows
         print('Solving via backtracking')
         backtrack(partial_solution, placements['row'], row_args, col_args, completed_rows, completed_columns)
-    
+
     for solution in solution_list:
         print(solution)
+        plt.imshow(solution, cmap='Greys')
+        plt.axis('off')
+        plt.show()
